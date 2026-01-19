@@ -119,9 +119,13 @@ class Block(arcade.Sprite):
 
 
 class MyGame(arcade.Window):
-    def __init__(self):
+    def __init__(self, parent_pos=None):
         super().__init__(round(600 * SIZE), round(800 * SIZE), "Arculator")
         self.background = arcade.load_texture(":resources:/images/backgrounds/abstract_1.jpg")
+
+        # Передача позиции
+        # res = list(map(int, "".join([x if x.isnumeric() else " " for x in str(parent_pos)]).split()))
+        # self.set_location(int(res[1]), int(res[2]))
 
         # Создание управляемой платформы
         self.player = Player(self)

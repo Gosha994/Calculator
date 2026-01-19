@@ -176,6 +176,7 @@ class Calculator(QWidget):
         btn_multiply.clicked.connect(lambda: self.keyboard_input("*", "operation"))
         btn_share.clicked.connect(lambda: self.keyboard_input("/", "operation"))
         btn_equally.clicked.connect(lambda: self.result("equal"))
+        # btn_
         btn_dot.clicked.connect(lambda: self.keyboard_input(".", "operation"))
         btn_delete.clicked.connect(lambda: self.keyboard_input("del", "operation"))
         btn_clear_entry.clicked.connect(lambda: self.keyboard_input("ClrEntr", "operation"))
@@ -658,7 +659,7 @@ class Calculator(QWidget):
             self.keyboard_input("Clear", "opr")
         elif event.key() == Qt.Key.Key_Equal:
             self.result("equal")
-        elif event.key() == Qt.Key.Key_Enter:
+        elif event.key() == 61 or event.key() == 16777220:
             self.result("equal")
 
     def show_secret_popup(self):
@@ -721,7 +722,12 @@ class Calculator(QWidget):
             self.n = Platformer(parent_calculator=self, parent_pos=calc_pos, run=True)
             self.n.show()
         elif result == 69:
-            self.n = MyGame()
+            # Сохраняем текущую позицию калькулятора
+            self.calculator_position = self.pos()
+            self.hide()
+            calc_pos = self.pos()
+            print(calc_pos)
+            self.n = MyGame(calc_pos)
             self.n.setup()
             self.n.run()
             ...
