@@ -11,7 +11,6 @@ from TitleBar import CustomTitleBar
 
 from Games.Arculator.arculator import MyGame
 
-
 class Calculator(QWidget):
     def __init__(self):
         super().__init__()
@@ -721,7 +720,12 @@ class Calculator(QWidget):
             self.n = Platformer(parent_calculator=self, parent_pos=calc_pos, run=True)
             self.n.show()
         elif result == 69:
-            self.n = MyGame()
+            # Сохраняем текущую позицию калькулятора
+            self.calculator_position = self.pos()
+            self.hide()
+            calc_pos = self.pos()
+            print(calc_pos)
+            self.n = MyGame(calc_pos)
             self.n.setup()
             self.n.run()
             ...
