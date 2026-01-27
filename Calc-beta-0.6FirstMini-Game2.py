@@ -11,7 +11,6 @@ from TitleBar import CustomTitleBar
 
 from Games.Arculator.arculator import MyGame
 
-
 class Calculator(QWidget):
     def __init__(self):
         super().__init__()

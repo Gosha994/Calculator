@@ -7,23 +7,15 @@ from PyQt6.QtCore import Qt
 from random import randint
 from TitleBar import CustomTitleBar
 
-# Открываем сохранённый результат
-
-with open("Games/MiniGamesAssets/MiniGamesSaves") as file:
-    setting = file.readlines()
-    SAVES = {}
-    for elem in setting:
-        SAVES[f"{elem.split(": ")[0]}"] = elem.split()[1]
-
 
 class Gamble(QWidget):
     def __init__(self, parent_calculator=None, parent_pos=None, parent_size=None, run=False):
         if not run:
             self.parent.close()
             QApplication.quit()
-        self.sou = int(SAVES["GAMBLE_BOXES"])
-        self.buz = int(SAVES["GAMBLE_BUZ_SAUSAGE"])
-        self.balance = int(SAVES["GAMBLE_BALANCE"])
+        self.sou = 0
+        self.buz = 0
+        self.balance = 50
         self.parent_calculator = parent_calculator  # Сохраняем ссылку на калькулятор
         self.parent_pos = parent_pos
         self.parent_size = parent_size
@@ -69,30 +61,23 @@ class Gamble(QWidget):
                     }
                 """
 
-        if self.balance > -10:
-            self.button = QPushButton("Коробочка с соусом! Жми!", self)
-            self.button.move(25, 80)
-            self.button.resize(250, 60)
-            self.button.clicked.connect(self.btc)
-            self.button.setStyleSheet(f"background-color: #{str(random.randint(100000, 999999))}")
-        else:
-            self.button = QPushButton("Продать колбасы", self)
-            self.button.move(25, 80)
-            self.button.resize(250, 60)
-            self.button.clicked.connect(self.b_plus)
-            self.button.setStyleSheet(f"background-color: #{str(random.randint(100000, 999999))}")
+        self.button = QPushButton("Коробочка с соусом! Жми!", self)
+        self.button.move(25, 80)
+        self.button.resize(250, 60)
+        self.button.clicked.connect(self.btc)
+        self.button.setStyleSheet(f"background-color: #{str(random.randint(100000, 999999))}")
 
-        self.lable_buz = QLabel(f"Бузулукский\nколбас: {self.buz}", self)
+        self.lable_buz = QLabel("Бузулукский\nколбас: 0", self)
         self.lable_buz.move(25, 500)
         self.lable_buz.resize(150, 60)
         self.lable_buz.setStyleSheet(self.text_style)
 
-        self.lable_sou = QLabel(f"Коробочка\nсоуса: {self.sou}", self)
+        self.lable_sou = QLabel("Коробочка\nсоуса: 0", self)
         self.lable_sou.move(190, 500)
         self.lable_sou.resize(150, 60)
         self.lable_sou.setStyleSheet(self.text_style)
 
-        self.lable_balance = QLabel(f"Баланс: {self.balance}", self)
+        self.lable_balance = QLabel("Баланс: 50", self)
         self.lable_balance.move(10, 40)
         self.lable_balance.resize(350, 30)
         self.lable_balance.setStyleSheet(self.text_style)
@@ -203,15 +188,6 @@ class Gamble(QWidget):
                                 background-color: #282828;
                             }}
                         """)
-        SAVES["GAMBLE_BOXES"] = str(self.sou)
-        SAVES["GAMBLE_BUZ_SAUSAGE"] = str(self.buz)
-        SAVES["GAMBLE_BALANCE"] = str(self.balance)
-
-        with open("Games/MiniGamesAssets/MiniGamesSaves", 'w', encoding='utf-8') as file2:
-            lines = []
-            for key, value in SAVES.items():
-                lines.append(f"{key}: {value}")
-            file2.write("\n".join(lines))
 
     def b_plus(self):
         self.button.setText("Коробочка с соусом! Жми!")
@@ -220,6 +196,9 @@ class Gamble(QWidget):
         self.lable_balance.setText(f"Баланс: {self.balance}₽")
         self.button.clicked.disconnect()
         self.button.clicked.connect(self.btc)
+        with open('../WorkSave.txt', 'w', encoding='utf-8') as f:
+            f.write(f'{self.balance}')
+
 
 
 class Platformer(QWidget):
@@ -458,3 +437,6 @@ class Platformer(QWidget):
         self.lable_balance.setText(f"Баланс: {self.balance}₽")
         self.button.clicked.disconnect()
         self.button.clicked.connect(self.btc)
+
+
+url = "https://telemost.yandex.ru/j/7265793493"
