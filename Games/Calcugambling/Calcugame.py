@@ -1,6 +1,10 @@
 import arcade
 import random
 
+# константы
+SIZE = 1
+DIFFICULTY = 1
+
 # Задаём размеры окна
 SCREEN_WIDTH = 370
 SCREEN_HEIGHT = 580

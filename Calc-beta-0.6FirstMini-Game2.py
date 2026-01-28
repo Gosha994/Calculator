@@ -11,6 +11,19 @@ from TitleBar import CustomTitleBar
 
 from Games.Arculator.arculator import MyGame
 
+from Games.Culcuraptor.culcuraptor import Culcuraptor
+
+# Загружаем константы
+with open("setup") as file:
+    setting = file.readlines()
+    SAVES = {}
+    for elem in setting:
+        SAVES[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+
+SIZE = int(SAVES["SIZE"])
+DIFFICULTY = int(SAVES["DIFFICULTY"])
+
+
 class Calculator(QWidget):
     def __init__(self):
         super().__init__()
@@ -708,27 +721,33 @@ class Calculator(QWidget):
         if result == 777:
             # Сохраняем текущую позицию калькулятора
             self.calculator_position = self.pos()
-            self.hide()
+            # self.hide()
             calc_pos = self.pos()
             self.n = Gamble(parent_calculator=self, parent_pos=calc_pos, run=True)
             self.n.show()
         elif result == 99:
             # Сохраняем текущую позицию калькулятора
             self.calculator_position = self.pos()
-            self.hide()
+            # self.hide()
             calc_pos = self.pos()
             self.n = Platformer(parent_calculator=self, parent_pos=calc_pos, run=True)
             self.n.show()
         elif result == 69:
             # Сохраняем текущую позицию калькулятора
             self.calculator_position = self.pos()
-            self.hide()
+            # self.hide()
             calc_pos = self.pos()
-            print(calc_pos)
+            # print(calc_pos)
             self.n = MyGame(calc_pos)
             self.n.setup()
             self.n.run()
             ...
+        elif result == 404:
+            self.calculator_position = self.pos()
+            calc_pos = self.pos()
+            self.n = Culcuraptor(SIZE, DIFFICULTY)
+            self.n.setup()
+            self.n.run()
 
 
 if __name__ == '__main__':
