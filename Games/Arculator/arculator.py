@@ -118,7 +118,7 @@ class Block(arcade.Sprite):
             self.window.sprites.remove(self)
 
 
-class MyGame(arcade.Window):
+class Arculator(arcade.Window):
     def __init__(self, parent_pos=None):
         super().__init__(round(600 * SIZE), round(800 * SIZE), "Arculator")
         self.background = arcade.load_texture(":resources:/images/backgrounds/abstract_1.jpg")
@@ -194,6 +194,6 @@ class MyGame(arcade.Window):
 
 
 if __name__ == "__main__":
-    game = MyGame()
+    game = Arculator()
     game.setup()
     arcade.run()

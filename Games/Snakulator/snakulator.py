@@ -4,8 +4,15 @@ from pyglet.event import EVENT_HANDLE_STATE
 
 
 # Константы, необходимые при запуске напрямую из пай файла
-SIZE = 1
-DIFFICULTY = 1
+# Загружаем константы
+with open("setup") as file:
+    setting = file.readlines()
+    SAVES = {}
+    for elem in setting:
+        SAVES[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+
+SIZE = int(SAVES["SIZE"])
+DIFFICULTY = int(SAVES["DIFFICULTY"])
 
 
 # Еда

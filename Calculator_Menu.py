@@ -9,9 +9,13 @@ from Games.MiniGames import Gamble, Platformer
 
 from TitleBar import CustomTitleBar
 
-from Games.Arculator.arculator import MyGame
+from Games.Arculator.arculator import Arculator
 
 from Games.Culcuraptor.culcuraptor import Culcuraptor
+
+from Games.Snakulator.snakulator import Snakulator
+
+from Games.Calcugambling.Calcugambling import Calcugambling
 
 # Загружаем константы
 with open("setup") as file:
@@ -723,8 +727,10 @@ class Calculator(QWidget):
             self.calculator_position = self.pos()
             # self.hide()
             calc_pos = self.pos()
-            self.n = Gamble(parent_calculator=self, parent_pos=calc_pos, run=True)
-            self.n.show()
+            self.n = Calcugambling()
+            self.n.setup()
+            self.n.run()
+
         elif result == 99:
             # Сохраняем текущую позицию калькулятора
             self.calculator_position = self.pos()
@@ -738,7 +744,7 @@ class Calculator(QWidget):
             # self.hide()
             calc_pos = self.pos()
             # print(calc_pos)
-            self.n = MyGame(calc_pos)
+            self.n = Arculator(calc_pos)
             self.n.setup()
             self.n.run()
             ...
@@ -746,6 +752,12 @@ class Calculator(QWidget):
             self.calculator_position = self.pos()
             calc_pos = self.pos()
             self.n = Culcuraptor(SIZE, DIFFICULTY)
+            self.n.setup()
+            self.n.run()
+        elif result == 1000:
+            self.calculator_position = self.pos()
+            calc_pos = self.pos()
+            self.n = Snakulator()
             self.n.setup()
             self.n.run()
 
