@@ -1,5 +1,6 @@
 """Пометка: в этой версии планируется переработать бпр (меню с кнопками крестика и свёртывания) и добавить блок
 мини-игр с первой мини-игрой а так второй раз переписать логику блока ввода"""
+import math
 import sys
 from PyQt6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QLineEdit, QMessageBox)
 from PyQt6.QtCore import Qt, QPoint, QSettings
@@ -733,13 +734,13 @@ class Calculator(QWidget):
             self.n.setup()
             self.n.run()
 
-        elif result == 99:
-            # Сохраняем текущую позицию калькулятора
-            self.calculator_position = self.pos()
+        # elif result == 99:
+        #     Сохраняем текущую позицию калькулятора
+            # self.calculator_position = self.pos()
             # self.hide()
-            calc_pos = self.pos()
-            self.n = Platformer(parent_calculator=self, parent_pos=calc_pos, run=True)
-            self.n.show()
+            # calc_pos = self.pos()
+            # self.n = Platformer(parent_calculator=self, parent_pos=calc_pos, run=True)
+            # self.n.show()
         elif result == 69:
             # Сохраняем текущую позицию калькулятора
             self.calculator_position = self.pos()
@@ -756,12 +757,13 @@ class Calculator(QWidget):
             self.n = Culcuraptor(SIZE, DIFFICULTY)
             self.n.setup()
             self.n.run()
-        elif result == 1000:
-            self.calculator_position = self.pos()
-            calc_pos = self.pos()
-            self.n = Snakulator()
-            self.n.setup()
-            self.n.run()
+        # TODO: исправить змейку (крашит все игры сразу)
+        # elif result == 1000:
+        #     self.calculator_position = self.pos()
+        #     calc_pos = self.pos()
+        #     self.n = Snakulator()
+        #     self.n.setup()
+        #     self.n.run()
         elif result == 111:
             self.calculator_position = self.pos()
             calc_pos = self.pos()

@@ -1,8 +1,9 @@
 import arcade
 import random
 from pyglet.graphics import Batch
-from arcade.particles import FadeParticle, Emitter, EmitBurst, EmitInterval, EmitMaintainCount
+from arcade.particles import FadeParticle, Emitter, EmitBurst, EmitInterval, EmitMaintainCount, EternalParticle
 from arcade.sound import Sound
+from arcade.particles import make_burst_emitter
 
 with open("setup") as file:
     setting = file.readlines()
@@ -96,11 +97,15 @@ class Tetris(arcade.Window):
 
         self.new_piece()
 
-        sound = arcade.load_sound(":resources:music/1918.mp3", streaming=True)
+        # Музыка
+        self.sound = arcade.load_sound(":resources:music/1918.mp3", streaming=True)
 
-        arcade.play_sound(sound, volume=1, pan=0.0)
+        self.sound_player = arcade.play_sound(self.sound, volume=1, pan=0.0, loop=True)
 
+        # Создаём частицы
+        self.emitter = None
 
+        self.particle_line()
 
     def new_piece(self):
         """ Создание новой фигуры """
@@ -190,6 +195,22 @@ class Tetris(arcade.Window):
             self.current_y -= 1
         self.place_piece()
 
+    # Функция частиц
+    def particle_line(self):
+        self.emitter = Emitter(
+            center_xy=(0, -5),
+            emit_controller=EmitMaintainCount(100),
+            particle_factory=lambda emitter: FadeParticle(
+                filename_or_texture="Assets/particle.png",
+                # Полоса по горизонтали от 0 до 300
+                center_xy=(random.uniform(0, 300), 0),
+                change_xy=(0, random.uniform(0.5, 0.5)),  # Скорость вверх
+                lifetime=random.uniform(0.5, 1),  # Время жизни
+                scale=0.2
+            )
+
+        )
+
     def on_draw(self):
         self.clear()
 
@@ -233,8 +254,12 @@ class Tetris(arcade.Window):
         # particles = arcade.particles.EternalParticle()
         game_over = arcade.Text("ИГРА ОКОНЧЕНА!",
                                 SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
-                                arcade.color.RED, 30,
+                                arcade.color.CANDY_APPLE_RED, 30,
                                 anchor_x="center", batch=None)
+        # restart = arcade.Text("Нажмите R для продолжения!",
+        #                         SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2.3,
+        #                         arcade.color.CADMIUM_GREEN, 17,
+        #                         anchor_x="center", batch=None)
         pause = arcade.Text("ПАУЗА",
                             SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 40,
                             arcade.color.YELLOW, 30, anchor_x="center",
@@ -242,6 +267,7 @@ class Tetris(arcade.Window):
 
         if self.game_over:
             game_over.batch = self.batch
+            # restart.batch = self.batch
         else:
             game_over.batch = None
 
@@ -250,6 +276,10 @@ class Tetris(arcade.Window):
         else:
             pause.batch = None
         self.batch.draw()
+
+        # Рисуем частицы
+        if self.emitter:
+            self.emitter.draw()
 
     def on_update(self, delta_time):
         if self.paused or self.game_over:
@@ -264,8 +294,13 @@ class Tetris(arcade.Window):
             else:
                 self.place_piece()
 
+        # Обновляем частицы
+        if self.emitter:
+            self.emitter.update()
+
     def on_key_press(self, key, modifiers):
         if self.game_over:
+            arcade.stop_sound(self.sound_player)
             return
 
         if key == arcade.key.P:
@@ -286,19 +321,12 @@ class Tetris(arcade.Window):
         elif key == arcade.key.SPACE:
             self.hard_drop()
 
-    def make_explosion(x, y, count=80):
-        # Разовый взрыв с искрами во все стороны
-        return Emitter(
-            center_xy=(x, y),
-            emit_controller=EmitBurst(count),
-            particle_factory=lambda e: FadeParticle(
-                filename_or_texture=random.choice(SPARK_TEX),
-                change_xy=arcade.math.rand_in_circle((0.0, 0.0), 9.0),
-                lifetime=random.uniform(0.5, 1.1),
-                start_alpha=255, end_alpha=0,
-                scale=random.uniform(0.35, 0.6)
-            ),
-        )
+    # def (self):
+
+    def on_close(self):
+        # Останавливаем музыку, чтобы она не ушла в главное меню
+        arcade.stop_sound(self.sound_player)
+        super().on_close()
 
 
 def main():
