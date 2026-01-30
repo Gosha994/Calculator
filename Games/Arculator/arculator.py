@@ -1,3 +1,4 @@
+from os import write
 import arcade
 import random
 import math
@@ -7,10 +8,24 @@ from pyglet.event import EVENT_HANDLE_STATE
 # ВРЕМЕННЫЙ словарь для перевода хп блока в текстуру
 NUM_TO_CARDS = {0: "A", 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 9, 9: "K"}
 
-with open("Games/Arculator/saves") as file:
-    settings = file.readlines()
-    SIZE = float(settings[0].split(": ")[1])
-    DIFFICULTY = float(settings[1].split(": ")[1])
+with open("setup") as file:
+    setting = file.readlines()
+    SAVES = {}
+    for elem in setting:
+        key, value = elem.strip().split(" = ")
+        SAVES[key] = value
+
+DIFFICULTY = int(SAVES["DIFFICULTY"])
+SIZE = int(SAVES["SIZE"]) * 0.7
+
+with open("inventory") as file:
+    setting = file.readlines()
+    INVENTORY = {}
+    for elem in setting:
+        key, value = elem.strip().split(" = ")
+        INVENTORY[key] = value
+
+BALANCE = int(INVENTORY["BALANCE"])
 
 
 # Игрок - платформа, отбивающая мяч
@@ -46,6 +61,9 @@ class Boll(arcade.Sprite):
 
         self.window = window
 
+        # Временный баланс для подсчёта очков за текущий уровень
+        self.temp_balance = 0
+
     def update(self, delta_time: float = 1 / 60, *args, **kwargs):
         # Коллизия с игроком и рассчёт угла полёта
         if self.collides_with_sprite(self.window.player):
@@ -62,7 +80,7 @@ class Boll(arcade.Sprite):
             self.dy *= -1
         elif self.center_y < 0:
             self.window.setup()
-            pass
+            return
 
         # Перемещение и коллизия с блоками
         start_x, start_y = self.center_x, self.center_y
@@ -77,6 +95,8 @@ class Boll(arcade.Sprite):
                     # Изменение номера и удаление при попадании по 0
                     if block.num == 0:
                         block.kill_time = 1
+                        # Добавление очков во временный баланс
+                        self.temp_balance += 1 * DIFFICULTY
 
                         # Изменение скорости мяча
                         self.dx /= self.speed
@@ -165,18 +185,57 @@ class Arculator(arcade.Window):
         # Физический движок
         self.engine = arcade.PhysicsEngineSimple(self.boll, self.blocks)
 
+        # Флаг для проверки, все ли блоки снесены
+        self.all_blocks_destroyed = False
+
     def setup(self):
+        # Если все блоки были снесены в предыдущем уровне, сохраняем баланс
+        if self.all_blocks_destroyed and self.boll.temp_balance > 0:
+            self.save_balance(self.boll.temp_balance)
+
         self.player.center_x, self.player.center_y = self.width / 2, 50 * SIZE
 
         self.boll.center_x, self.boll.center_y = random.choice(range(250, 350)) * SIZE, 70 * SIZE
         self.boll.speed = 500 * SIZE
+        # Сбрасываем временный баланс для нового уровня
+        self.boll.temp_balance = 0
+        self.all_blocks_destroyed = False
 
+        # Восстанавливаем все блоки
         for block in self.blocklist:
             block.num = block.start_num
             block.texture = arcade.load_texture(f":resources:/images/cards/cardClubs{NUM_TO_CARDS[block.num]}.png")
+            block.kill_time = 0
             if block not in self.sprites:
                 self.sprites.append(block)
+            if block not in self.blocks:
                 self.blocks.append(block)
+
+    def on_update(self, delta_time: float):
+        self.sprites.update()
+
+        # Проверяем, все ли блоки снесены
+        if len(self.blocks) == 0 and not self.all_blocks_destroyed:
+            self.all_blocks_destroyed = True
+            # Автоматически запускаем новый уровень
+            self.setup()
+
+    def save_balance(self, earned_balance):
+        """Сохранение баланса в файл"""
+        # Обновляем баланс
+        global BALANCE
+        BALANCE += int(earned_balance * DIFFICULTY * 10)
+        INVENTORY["BALANCE"] = str(BALANCE)
+
+        # Сохраняем в файл
+        try:
+            with open("inventory", "w", encoding="utf-8") as file:
+                lines = []
+                for key, value in INVENTORY.items():
+                    lines.append(f"{key} = {value}")
+                file.write("\n".join(lines))
+        except Exception as e:
+            print(f"Ошибка при сохранении баланса: {e}")
 
     def on_key_press(self, symbol: int, modifiers: int) -> EVENT_HANDLE_STATE:
         self.key_pressed.add(symbol)
@@ -189,8 +248,9 @@ class Arculator(arcade.Window):
         arcade.draw_texture_rect(self.background, arcade.XYWH(self.width / 2, self.height / 2, self.width, self.height))
         self.sprites.draw()
 
-    def on_update(self, delta_time: float):
-        self.sprites.update()
+        # Отображаем текущий баланс
+        arcade.draw_text(f"Баланс: {BALANCE}", 10, 10, arcade.color.WHITE, 16)
+        arcade.draw_text(f"Текущие очки: {self.boll.temp_balance}", 10, 30, arcade.color.YELLOW, 14)
 
 
 if __name__ == "__main__":

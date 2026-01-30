@@ -17,6 +17,8 @@ from Games.Snakulator.snakulator import Snakulator
 
 from Games.Calcugambling.Calcugambling import Calcugambling
 
+from Games.Calcublock.Calcublock import Tetris
+
 # Загружаем константы
 with open("setup") as file:
     setting = file.readlines()
@@ -69,7 +71,7 @@ class Calculator(QWidget):
         # секретная кнопка
         self.secret_button = QPushButton("", content_widget)
         self.secret_button.setFixedSize(40, 40)  # Размер невидимой области
-        self.secret_button.move(317, 13)  # Позиция в правом верхнем углу поля ввода
+        self.secret_button.move(320, 10)  # Позиция в правом верхнем углу поля ввода
         self.secret_button.setStyleSheet("""
                         QPushButton {
                             background-color: transparent;
@@ -759,6 +761,11 @@ class Calculator(QWidget):
             calc_pos = self.pos()
             self.n = Snakulator()
             self.n.setup()
+            self.n.run()
+        elif result == 111:
+            self.calculator_position = self.pos()
+            calc_pos = self.pos()
+            self.n = Tetris()
             self.n.run()
 
 

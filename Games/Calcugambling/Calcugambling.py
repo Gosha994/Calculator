@@ -2,6 +2,8 @@ import arcade
 import random
 import time
 
+from arcade.uicolor import BLACK
+
 # константы
 with open("setup") as file:
     setting = file.readlines()
@@ -9,8 +11,15 @@ with open("setup") as file:
     for elem in setting:
         SAVES[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
 
+with open("inventory") as file:
+    setting = file.readlines()
+    INVENTORY = {}
+    for elem in setting:
+        INVENTORY[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+
 SIZE = int(SAVES["SIZE"])
 DIFFICULTY = int(SAVES["DIFFICULTY"])
+BALANCE = int(INVENTORY["BALANCE"])
 
 # Задаём размеры окна
 SCREEN_WIDTH = 370 * SIZE
@@ -18,7 +27,8 @@ SCREEN_HEIGHT = 580 * SIZE
 SCREEN_TITLE = "CalcuGamble"
 
 # Тестовые слоты, позже будут заменены на текст для других игровых механик
-SLOTS = "👨‍💼👯‍♀️🪵🍄🍇🎱🎟💵7️⃣🔑🌭❌💀"
+# SLOTS = "👨‍💼👯‍♀️🪵🍄🍇🎱🎟💵7️⃣🔑🌭❌💀"
+SLOTS = "1234567890+-*"
 
 
 class WheelSlot(arcade.Sprite):
@@ -32,7 +42,8 @@ class WheelSlot(arcade.Sprite):
         self.fixed_scale = scale
 
         # Добавляем символ для отображения поверх колеса
-        self.symbol = random.choice(["👨‍💼", "👯‍♀️", "🪵", "🍄", "🍇", "🎱", "🎟", "💵", "7️⃣", "🔑", "🌭", "❌", "💀"])
+        # self.symbol = random.choice(["👨‍💼", "👯‍♀️", "🪵", "🍄", "🍇", "🎱", "🎟", "💵", "7️⃣", "🔑", "🌭", "❌", "💀"])
+        self.symbol = random.choice(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "+", "-", "*"])
 
         # Параметры скорости анимации
         self.animation_speed = 10.0
@@ -53,7 +64,8 @@ class WheelSlot(arcade.Sprite):
         self.animation_speed = 15.0
 
         # При начале вращения выбираем новый случайный символ
-        self.symbol = random.choice(["👨‍💼", "👯‍♀️", "🪵", "🍄", "🍇", "🎱", "🎟", "💵", "7️⃣", "🔑", "🌭", "❌", "💀"])
+        # self.symbol = random.choice(["👨‍💼", "👯‍♀️", "🪵", "🍄", "🍇", "🎱", "🎟", "💵", "7️⃣", "🔑", "🌭", "❌", "💀"])
+        self.symbol = random.choice(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "+", "-", "*"])
 
     def update_animation(self):
         if not self.is_spinning:
@@ -87,6 +99,9 @@ class Calcugambling(arcade.Window):
     def __init__(self, width=SCREEN_WIDTH, height=SCREEN_HEIGHT, title=SCREEN_TITLE):
         super().__init__(width, height, title)
         arcade.set_background_color(arcade.color.ASH_GREY)
+
+        # Баланс игрока
+        self.balance = BALANCE
 
         # Создаём список спрайтов
         self.layout_list = arcade.SpriteList()
@@ -148,7 +163,7 @@ class Calcugambling(arcade.Window):
                     wheel.symbol,
                     wheel.center_x,
                     wheel.center_y,
-                    self.font_color,
+                    arcade.color.BLACK,
                     self.font_size,
                     anchor_x="center",
                     anchor_y="center",
@@ -157,8 +172,7 @@ class Calcugambling(arcade.Window):
             else:
                 # Можно отображать что-то другое во время вращения
                 arcade.draw_text(
-                    #"🌀",  # Иконка вращения
-                    "",
+                    "",  # Текст во время вращения
                     wheel.center_x,
                     wheel.center_y,
                     arcade.color.GOLD,
@@ -169,16 +183,16 @@ class Calcugambling(arcade.Window):
 
         # Можно добавить статический текст где-нибудь еще
         # Например, заголовок или счет
-        # arcade.draw_text(
-        #     "Монеты",
-        #     SCREEN_WIDTH // 2,
-        #     SCREEN_HEIGHT * 0.85,
-        #     arcade.color.BLACK,
-        #     28,
-        #     anchor_x="center",
-        #     anchor_y="center",
-        #     bold=True
-        # )
+        arcade.draw_text(
+            f"Монеты: {self.balance}",
+            SCREEN_WIDTH // 5,
+            SCREEN_HEIGHT * 0.7,
+            arcade.color.GOLD,
+            20,
+            anchor_x="center",
+            anchor_y="center",
+            bold=True
+        )
 
         arcade.draw_text(
             "Крутить",
@@ -199,7 +213,8 @@ class Calcugambling(arcade.Window):
         """Обработка клика мышью"""
         buttons_hit = arcade.get_sprites_at_point((x, y), self.button_list)
 
-        if buttons_hit:
+        if buttons_hit and self.balance >= 100:
+            self.balance -= 100
             for wheel in self.wheel_slots:
                 wheel.start_spin()
 
