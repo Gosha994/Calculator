@@ -1,5 +1,3 @@
-"""Пометка: в этой версии планируется переработать бпр (меню с кнопками крестика и свёртывания) и добавить блок
-мини-игр с первой мини-игрой а так второй раз переписать логику блока ввода"""
 import math
 import sys
 from PyQt6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QLineEdit, QMessageBox)
@@ -19,6 +17,8 @@ from Games.Snakulator.snakulator import Snakulator
 from Games.Calcugambling.Calcugambling import Calcugambling
 
 from Games.Calcublock.Calcublock import Tetris
+
+from Games.Platformer.Platformer import GameWindow
 
 # Загружаем константы
 with open("setup") as file:
@@ -769,6 +769,13 @@ class Calculator(QWidget):
             calc_pos = self.pos()
             self.n = Tetris()
             self.n.run()
+        elif result == 100:
+            self.calculator_position = self.pos()
+            calc_pos = self.pos()
+            self.n = GameWindow()
+            self.n.setup()
+            self.n.run()
+
 
 
 if __name__ == '__main__':
