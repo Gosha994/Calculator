@@ -367,8 +367,10 @@ class GameWindow(arcade.Window):
         if not self.game_started:
             self.draw_start_screen()
         elif self.game_over:
+            self.player_list = arcade.SpriteList()
             self.draw_game_over_screen()
         elif self.win:
+            self.player_list = arcade.SpriteList()
             self.draw_win_screen()
 
     def draw_ui(self):
@@ -711,7 +713,7 @@ class GameWindow(arcade.Window):
                 self.game_time = 0
                 self.left_pressed = False
                 self.right_pressed = False
-                arcade.stop_sound(self.sound_playerв)
+                arcade.stop_sound(self.sound_player)
                 self.sound = arcade.load_sound(":resources:music/funkyrobot.mp3", streaming=True)
                 self.sound_player = arcade.play_sound(self.sound, volume=1, pan=0.0, loop=True)
             return

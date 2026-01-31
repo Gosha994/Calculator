@@ -4,15 +4,11 @@ from PyQt6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QL
 from PyQt6.QtCore import Qt, QPoint, QSettings
 from PyQt6.QtGui import QIcon, QAction
 
-from Games.MiniGames import Gamble, Platformer
-
 from TitleBar import CustomTitleBar
 
 from Games.Arculator.arculator import Arculator
 
 from Games.Culcuraptor.culcuraptor import Culcuraptor
-
-from Games.Snakulator.snakulator import Snakulator
 
 from Games.Calcugambling.Calcugambling import Calcugambling
 
@@ -736,18 +732,18 @@ class Calculator(QWidget):
 
         # elif result == 99:
         #     Сохраняем текущую позицию калькулятора
-            # self.calculator_position = self.pos()
-            # self.hide()
-            # calc_pos = self.pos()
-            # self.n = Platformer(parent_calculator=self, parent_pos=calc_pos, run=True)
-            # self.n.show()
+        # self.calculator_position = self.pos()
+        # self.hide()
+        # calc_pos = self.pos()
+        # self.n = Platformer(parent_calculator=self, parent_pos=calc_pos, run=True)
+        # self.n.show()
         elif result == 69:
             # Сохраняем текущую позицию калькулятора
             self.calculator_position = self.pos()
             # self.hide()
             calc_pos = self.pos()
             # print(calc_pos)
-            self.n = Arculator(calc_pos)
+            self.n = Arculator()
             self.n.setup()
             self.n.run()
             ...
@@ -775,7 +771,6 @@ class Calculator(QWidget):
             self.n = GameWindow()
             self.n.setup()
             self.n.run()
-
 
 
 if __name__ == '__main__':

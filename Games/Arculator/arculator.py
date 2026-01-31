@@ -154,6 +154,9 @@ class Arculator(arcade.Window):
         super().__init__(round(600 * SIZE), round(800 * SIZE), "Arculator")
         self.background = arcade.load_texture(":resources:/images/backgrounds/abstract_1.jpg")
 
+        global SOUNDS
+        SOUNDS = True
+
         # Передача позиции
         # res = list(map(int, "".join([x if x.isnumeric() else " " for x in str(parent_pos)]).split()))
         # self.set_location(int(res[1]), int(res[2]))
