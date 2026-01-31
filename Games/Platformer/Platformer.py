@@ -696,6 +696,8 @@ class GameWindow(arcade.Window):
         if not self.game_started:
             if key == arcade.key.SPACE:
                 self.game_started = True
+                self.sound = arcade.load_sound(":resources:music/funkyrobot.mp3", streaming=True)
+                self.sound_player = arcade.play_sound(self.sound, volume=1, pan=0.0, loop=True)
             return
 
         if self.game_over or self.win:
@@ -709,6 +711,9 @@ class GameWindow(arcade.Window):
                 self.game_time = 0
                 self.left_pressed = False
                 self.right_pressed = False
+                arcade.stop_sound(self.sound_playerв)
+                self.sound = arcade.load_sound(":resources:music/funkyrobot.mp3", streaming=True)
+                self.sound_player = arcade.play_sound(self.sound, volume=1, pan=0.0, loop=True)
             return
 
         if key in (arcade.key.LEFT, arcade.key.A):
@@ -727,6 +732,11 @@ class GameWindow(arcade.Window):
             self.left_pressed = False
         elif key in (arcade.key.RIGHT, arcade.key.D):
             self.right_pressed = False
+
+    def on_close(self):
+        # Останавливаем музыку, чтобы она не ушла в главное меню
+        arcade.stop_sound(self.sound_player)
+        super().on_close()
 
 
 if __name__ == "__main__":

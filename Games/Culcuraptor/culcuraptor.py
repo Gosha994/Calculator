@@ -3,7 +3,6 @@ import random
 from pyglet.event import EVENT_HANDLE_STATE
 from pyglet.graphics import Batch
 
-
 # Константы, необходимые при запуске напрямую из пай файла
 with open("setup") as file:
     setting = file.readlines()
@@ -33,16 +32,25 @@ class Raptor(arcade.Sprite):
         self.texture_change_time = 0
         self.texture_num = 0
 
+        # Звук прыжка
+        self.jump_sound = arcade.load_sound(":resources:sounds/jump5.wav")
+        # Звук смерти
+        self.dead_sound = arcade.load_sound(":resources:sounds/error3.wav")
+
+        # Наличие смерти
+        self.dead = False
+
     def update(self, delta_time: float = 1 / 60, *args, **kwargs):
         # Прыжок
         grounded = self.window.engine.can_jump(y_distance=5)
         if self.jump and grounded:
             self.window.engine.jump(self.jump_power)
+            arcade.play_sound(self.jump_sound, volume=1.0, pan=0.0, loop=False)
 
         # Проверка колизии с препядствиями
         if self.collides_with_list(self.window.objects):
             self.window.playing = False
-            self.window.label.text = "Press SPACE to restart"
+            arcade.play_sound(self.dead_sound, volume=1.0, pan=0.0, loop=False)
 
         # Анимация персонажа
         self.texture_change_time += delta_time
@@ -119,6 +127,9 @@ class Culcuraptor(arcade.Window):
             gravity_constant=2 * self.SIZE,
             walls=self.grounds)
 
+        # Звук обновления счёта
+        self.score_update = arcade.load_sound(":resources:sounds/coin1.wav")
+
     # ------------------------------------------------------------------------------------------------------------------
     def setup(self):
         self.playing = False
@@ -143,6 +154,18 @@ class Culcuraptor(arcade.Window):
 
         # Отображение текстового табло
         self.batch.draw()
+
+        arcade.draw_circle_filled(self.width * 0.1, self.height * 0.9, 35, arcade.color.YELLOW)
+        arcade.draw_circle_outline(self.width * 0.1, self.height * 0.9, 36, arcade.color.ORANGE, 3)
+
+        if not self.playing and self.time_played > 0:  # Игра остановлена
+            text = "Press SPACE to restart"
+            arcade.draw_text(text,
+                             self.width // 2,
+                             self.height // 2,
+                             arcade.color.GRAY,
+                             30, 3,
+                             anchor_x="center")
 
     # ------------------------------------------------------------------------------------------------------------------
     def on_update(self, delta_time: float):
@@ -196,8 +219,12 @@ class Culcuraptor(arcade.Window):
             self.engine.update()
 
             # Отсчёт игрового времени и отображение его
+            if (((10 * int(self.time_played)) // 10) % 10 == 0 and
+                    self.time_played < (10 * int(self.time_played)) // 10 + 0.02 and self.time_played > 1):
+                arcade.play_sound(self.score_update, volume=1.0, pan=0.0, loop=False)
+
             self.time_played += delta_time
-            self.label.text = f"Time: {round(self.time_played, 2)}"
+            self.label.text = f"Время: {round(self.time_played, 2)}"
 
     # ------------------------------------------------------------------------------------------------------------------
     def on_key_press(self, symbol: int, modifiers: int) -> EVENT_HANDLE_STATE:

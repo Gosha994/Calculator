@@ -67,6 +67,8 @@ class Boll(arcade.Sprite):
     def update(self, delta_time: float = 1 / 60, *args, **kwargs):
         # Коллизия с игроком и рассчёт угла полёта
         if self.collides_with_sprite(self.window.player):
+            hit = arcade.load_sound(":resources:sounds/rockHit2.wav")
+            arcade.play_sound(hit)
             angle = math.atan2(self.center_y - 50 * SIZE, self.center_x - self.window.player.center_x)
             self.dx = math.cos(angle) * self.speed
             self.dy = math.sin(angle) * self.speed
@@ -76,8 +78,12 @@ class Boll(arcade.Sprite):
         a = self.width // 2
         if not (a <= self.center_x + self.dx * delta_time <= self.window.width - a):
             self.dx *= -1
+            hit = arcade.load_sound(":resources:sounds/rockHit2.wav")
+            arcade.play_sound(hit)
         if self.center_y + self.dy * delta_time > self.window.height - a:
             self.dy *= -1
+            hit = arcade.load_sound(":resources:sounds/rockHit2.wav")
+            arcade.play_sound(hit)
         elif self.center_y < 0:
             self.window.setup()
             return
@@ -90,6 +96,8 @@ class Boll(arcade.Sprite):
 
         # Нахождение блока с которым соприкоснулись
         if self.collides_with_list(self.window.blocks):
+            hit = arcade.load_sound(":resources:sounds/rockHit2.wav")
+            arcade.play_sound(hit)
             for block in self.window.blocks:
                 if self.collides_with_sprite(block):
                     # Изменение номера и удаление при попадании по 0
@@ -152,6 +160,10 @@ class Arculator(arcade.Window):
 
         # Создание мяча
         self.boll = Boll(self)
+
+        # Музыка
+        self.sound = arcade.load_sound("Games/Arculator/pixelated_groove.wav", streaming=True)
+        self.sound_player = arcade.play_sound(self.sound, volume=0.5, pan=0.0, loop=True)
 
         # Генерация блоков
         self.blocklist = arcade.SpriteList()
@@ -251,6 +263,11 @@ class Arculator(arcade.Window):
         # Отображаем текущий баланс
         arcade.draw_text(f"Баланс: {BALANCE}", 10, 10, arcade.color.WHITE, 16)
         arcade.draw_text(f"Текущие очки: {self.boll.temp_balance}", 10, 30, arcade.color.YELLOW, 14)
+
+    def on_close(self):
+        # Останавливаем музыку, чтобы она не ушла в главное меню
+        arcade.stop_sound(self.sound_player)
+        super().on_close()
 
 
 if __name__ == "__main__":

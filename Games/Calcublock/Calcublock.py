@@ -162,6 +162,9 @@ class Tetris(arcade.Window):
                     grid_y = self.current_y - y
                     if 0 <= grid_y < GRID_HEIGHT:
                         self.grid[grid_y][grid_x] = self.current_color
+                        hit = arcade.load_sound(":resources:sounds/hurt3.wav")
+                        arcade.play_sound(hit)
+
 
         # Проверка заполненных линий
         self.check_lines()

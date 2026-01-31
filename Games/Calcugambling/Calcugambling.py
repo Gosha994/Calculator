@@ -214,6 +214,9 @@ class Calcugambling(arcade.Window):
         buttons_hit = arcade.get_sprites_at_point((x, y), self.button_list)
 
         if buttons_hit and self.balance >= 100:
+            # Тык
+            self.sound = arcade.load_sound(":resources:sounds/hurt2.wav", streaming=True)
+            self.sound_player = arcade.play_sound(self.sound, volume=1, pan=0.0, loop=False)
             self.balance -= 100
             for wheel in self.wheel_slots:
                 wheel.start_spin()
