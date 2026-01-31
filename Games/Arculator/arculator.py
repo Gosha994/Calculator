@@ -1,4 +1,3 @@
-from os import write
 import arcade
 import random
 import math
@@ -26,6 +25,8 @@ with open("inventory") as file:
         INVENTORY[key] = value
 
 BALANCE = int(INVENTORY["BALANCE"])
+
+SOUNDS = True
 
 
 # Игрок - платформа, отбивающая мяч
@@ -64,11 +65,13 @@ class Boll(arcade.Sprite):
         # Временный баланс для подсчёта очков за текущий уровень
         self.temp_balance = 0
 
+        self.hit = arcade.load_sound(":resources:sounds/rockHit2.wav")
+
     def update(self, delta_time: float = 1 / 60, *args, **kwargs):
         # Коллизия с игроком и рассчёт угла полёта
         if self.collides_with_sprite(self.window.player):
-            hit = arcade.load_sound(":resources:sounds/rockHit2.wav")
-            arcade.play_sound(hit)
+            if SOUNDS:
+                arcade.play_sound(self.hit)
             angle = math.atan2(self.center_y - 50 * SIZE, self.center_x - self.window.player.center_x)
             self.dx = math.cos(angle) * self.speed
             self.dy = math.sin(angle) * self.speed
@@ -78,12 +81,12 @@ class Boll(arcade.Sprite):
         a = self.width // 2
         if not (a <= self.center_x + self.dx * delta_time <= self.window.width - a):
             self.dx *= -1
-            hit = arcade.load_sound(":resources:sounds/rockHit2.wav")
-            arcade.play_sound(hit)
+            if SOUNDS:
+                arcade.play_sound(self.hit)
         if self.center_y + self.dy * delta_time > self.window.height - a:
             self.dy *= -1
-            hit = arcade.load_sound(":resources:sounds/rockHit2.wav")
-            arcade.play_sound(hit)
+            if SOUNDS:
+                arcade.play_sound(self.hit)
         elif self.center_y < 0:
             self.window.setup()
             return
@@ -96,8 +99,8 @@ class Boll(arcade.Sprite):
 
         # Нахождение блока с которым соприкоснулись
         if self.collides_with_list(self.window.blocks):
-            hit = arcade.load_sound(":resources:sounds/rockHit2.wav")
-            arcade.play_sound(hit)
+            if SOUNDS:
+                arcade.play_sound(self.hit)
             for block in self.window.blocks:
                 if self.collides_with_sprite(block):
                     # Изменение номера и удаление при попадании по 0
@@ -267,6 +270,8 @@ class Arculator(arcade.Window):
     def on_close(self):
         # Останавливаем музыку, чтобы она не ушла в главное меню
         arcade.stop_sound(self.sound_player)
+        global SOUNDS
+        SOUNDS = False
         super().on_close()
 
 
