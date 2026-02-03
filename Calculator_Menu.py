@@ -16,6 +16,10 @@ from Games.Calcublock.Calcublock import Tetris
 
 from Games.Platformer.Platformer import GameWindow
 
+from Games.Platformer.exp import GameWindowP
+
+from Games.Snakulator.snakulator import Snakulator
+
 # Загружаем константы
 with open("setup") as file:
     setting = file.readlines()
@@ -721,6 +725,7 @@ class Calculator(QWidget):
         msg.exec()
 
     def mini_games_and_events(self, result):
+        self.n = None
         if result == 777:
             # Сохраняем текущую позицию калькулятора
             self.calculator_position = self.pos()
@@ -769,6 +774,12 @@ class Calculator(QWidget):
             self.calculator_position = self.pos()
             calc_pos = self.pos()
             self.n = GameWindow()
+            self.n.setup()
+            self.n.run()
+        elif result == 101:
+            self.calculator_position = self.pos()
+            calc_pos = self.pos()
+            self.n = GameWindowP()
             self.n.setup()
             self.n.run()
 

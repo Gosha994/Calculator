@@ -722,7 +722,7 @@ class GameWindow(arcade.Window):
             self.left_pressed = True
         elif key in (arcade.key.RIGHT, arcade.key.D):
             self.right_pressed = True
-        elif key == arcade.key.SPACE:
+        elif key == arcade.key.SPACE or key == arcade.key.W:
             if self.is_on_ground:
                 self.player_y_vel = JUMP_FORCE
                 self.is_on_ground = False
