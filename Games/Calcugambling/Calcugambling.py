@@ -16,6 +16,7 @@ with open("inventory") as file:
     INVENTORY = {}
     for elem in setting:
         INVENTORY[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+    print("Open, code 0")
 
 SIZE = int(SAVES["SIZE"])
 DIFFICULTY = int(SAVES["DIFFICULTY"])
@@ -25,6 +26,8 @@ BALANCE = int(INVENTORY["BALANCE"])
 SCREEN_WIDTH = 370 * SIZE
 SCREEN_HEIGHT = 580 * SIZE
 SCREEN_TITLE = "CalcuGamble"
+SPINS = 0
+output_r = ["", "", "", "", ""]
 
 # Тестовые слоты, позже будут заменены на текст для других игровых механик
 # SLOTS = "👨‍💼👯‍♀️🪵🍄🍇🎱🎟💵7️⃣🔑🌭❌💀"
@@ -34,12 +37,14 @@ SLOTS = "1234567890+-*"
 class WheelSlot(arcade.Sprite):
     def __init__(self, scale=1.1):
         super().__init__("Games/Calcugambling/GambleWheal/GambleWheal0.png", scale=scale)
+        global SPINS
         self.is_spinning = False
         self.spin_start_time = 0
         self.spin_duration = 3.0
         self.current_frame = 0
         self.textures = []
         self.fixed_scale = scale
+        self.spins = SPINS
 
         # Добавляем символ для отображения поверх колеса
         # self.symbol = random.choice(["👨‍💼", "👯‍♀️", "🪵", "🍄", "🍇", "🎱", "🎟", "💵", "7️⃣", "🔑", "🌭", "❌", "💀"])
@@ -58,14 +63,25 @@ class WheelSlot(arcade.Sprite):
 
     def start_spin(self):
         """Начинаем вращение"""
+        global SPINS
+        global output_r
         self.is_spinning = True
         self.spin_start_time = time.time()
         self.current_frame = 0
         self.animation_speed = 15.0
 
+        nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+        operations = ["+", "-", "*"]
+
         # При начале вращения выбираем новый случайный символ
         # self.symbol = random.choice(["👨‍💼", "👯‍♀️", "🪵", "🍄", "🍇", "🎱", "🎟", "💵", "7️⃣", "🔑", "🌭", "❌", "💀"])
-        self.symbol = random.choice(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "+", "-", "*"])
+        if SPINS < 2 or SPINS > 2:
+            self.symbol = random.choice(nums)
+        else:
+            self.symbol = random.choice(operations)
+
+        output_r[SPINS] = str(self.symbol)
+        SPINS += 1
 
     def update_animation(self):
         if not self.is_spinning:
@@ -97,6 +113,25 @@ class WheelSlot(arcade.Sprite):
 
 class Calcugambling(arcade.Window):
     def __init__(self, width=SCREEN_WIDTH, height=SCREEN_HEIGHT, title=SCREEN_TITLE):
+        global SIZE, DIFFICULTY, BALANCE
+        with open("setup") as file:
+            setting = file.readlines()
+            SAVES = {}
+            for elem in setting:
+                SAVES[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+
+        with open("inventory") as file:
+            setting = file.readlines()
+            INVENTORY = {}
+            for elem in setting:
+                INVENTORY[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+            print("Open, code 0")
+
+        SIZE = int(SAVES["SIZE"])
+        DIFFICULTY = int(SAVES["DIFFICULTY"])
+        BALANCE = int(INVENTORY["BALANCE"])
+
+
         super().__init__(width, height, title)
         arcade.set_background_color(arcade.color.ASH_GREY)
 
@@ -119,24 +154,24 @@ class Calcugambling(arcade.Window):
         self.slot_list.clear()
 
         # Создаем слоты (колеса)
-        slot_x = (self.width // 84) * 10
-        slot_y = self.height * 0.6
+        slot_x = 65 * SIZE
+        slot_y = self.height * 0.6 * SIZE
         for _ in range(5):
-            wheel_slot = WheelSlot(scale=1.1)
+            wheel_slot = WheelSlot(scale=1)
             wheel_slot.center_x = slot_x
             wheel_slot.center_y = slot_y
             self.slot_list.append(wheel_slot)
             self.wheel_slots.append(wheel_slot)
-            slot_x += (self.width // 84) * 18.19
+            slot_x += 60 * SIZE
 
         # Добавляем рамку
-        frame = arcade.Sprite("Games/Calcugambling/pixil-frame-0(1).png", scale=1.1)
+        frame = arcade.Sprite("Games/Calcugambling/pixil-frame-0(3).png", scale=1)
         frame.center_x = SCREEN_WIDTH // 2
         frame.center_y = SCREEN_HEIGHT * 0.6
         self.layout_list.append(frame)
 
         # Добавляем кнопку
-        button = arcade.Sprite("Games/Calcugambling/Button.png", scale=1.1)
+        button = arcade.Sprite("Games/Calcugambling/Button.png", scale=1)
         button.center_x = SCREEN_WIDTH // 2
         button.center_y = SCREEN_HEIGHT * 0.3
         self.button_list.append(button)
@@ -195,7 +230,7 @@ class Calcugambling(arcade.Window):
         )
 
         arcade.draw_text(
-            "Крутить",
+            "Получить задачу",
             SCREEN_WIDTH // 2,
             SCREEN_HEIGHT * 0.3,
             arcade.color.DARK_BLUE,
@@ -211,6 +246,7 @@ class Calcugambling(arcade.Window):
 
     def on_mouse_press(self, x, y, button, modifiers):
         """Обработка клика мышью"""
+        global SPINS
         buttons_hit = arcade.get_sprites_at_point((x, y), self.button_list)
 
         if buttons_hit and self.balance >= 100:
@@ -218,8 +254,37 @@ class Calcugambling(arcade.Window):
             self.sound = arcade.load_sound(":resources:sounds/hurt2.wav", streaming=True)
             self.sound_player = arcade.play_sound(self.sound, volume=1, pan=0.0, loop=False)
             self.balance -= 100
+            SPINS = 0
             for wheel in self.wheel_slots:
                 wheel.start_spin()
+
+            INVENTORY["BALANCE"] = self.balance
+            # Сохраняем в файл
+            try:
+                with open("inventory", "w", encoding="utf-8") as file:
+                    lines = []
+                    for key, value in INVENTORY.items():
+                        lines.append(f"{key} = {value}")
+                    file.write("\n".join(lines))
+            except Exception as e:
+                print(f"Ошибка при сохранении баланса: {e}")
+
+    def on_close(self):
+        INVENTORY["BALANCE"] = self.balance
+        # Сохраняем в файл
+        try:
+            with open("inventory", "w", encoding="utf-8") as file:
+                lines = []
+                for key, value in INVENTORY.items():
+                    lines.append(f"{key} = {value}")
+                file.write("\n".join(lines))
+            print("Save, code 0")
+        except Exception as e:
+            print(f"Ошибка при сохранении баланса: {e}")
+
+        arcade.close_window()
+        arcade.stop_sound(self.sound_player)
+        super().on_close()
 
 
 if __name__ == "__main__":

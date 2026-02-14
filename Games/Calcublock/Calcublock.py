@@ -73,6 +73,27 @@ COLORS = [
 
 class Tetris(arcade.Window):
     def __init__(self):
+        global SIZE, DIFFICULTY, BALANCE
+        with open("setup") as file:
+            setting = file.readlines()
+            SAVES = {}
+            for elem in setting:
+                SAVES[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+
+        with open("inventory") as file:
+            setting = file.readlines()
+            INVENTORY = {}
+            for elem in setting:
+                INVENTORY[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+            print("Open, code 0")
+
+        SIZE = int(SAVES["SIZE"])
+        DIFFICULTY = int(SAVES["DIFFICULTY"])
+        BALANCE = int(INVENTORY["BALANCE"])
+
+        self.balance = BALANCE
+
+
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Тетрис")
         arcade.set_background_color(arcade.color.SILVER)
 
@@ -254,6 +275,7 @@ class Tetris(arcade.Window):
                            arcade.color.BLACK, 16, batch=self.batch)
         balance = arcade.Text(f"Монеты: {(self.score * DIFFICULTY) // 10}", 10, SCREEN_HEIGHT - 50,
                               arcade.color.BLACK, 16, batch=self.batch)
+        self.balance = balance
         # particles = arcade.particles.EternalParticle()
         game_over = arcade.Text("ИГРА ОКОНЧЕНА!",
                                 SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
@@ -328,8 +350,19 @@ class Tetris(arcade.Window):
 
     def on_close(self):
         # Останавливаем музыку, чтобы она не ушла в главное меню
-        arcade.stop_sound(self.sound_player)
-        super().on_close()
+        INVENTORY["BALANCE"] = self.balance
+        # Сохраняем в файл
+        try:
+            with open("inventory", "w", encoding="utf-8") as file:
+                lines = []
+                for key, value in INVENTORY.items():
+                    lines.append(f"{key} = {value}")
+                file.write("\n".join(lines))
+            print("Save, code 0")
+        except Exception as e:
+            print(f"Ошибка при сохранении баланса: {e}")
+
+        arcade.close_window()
 
 
 def main():

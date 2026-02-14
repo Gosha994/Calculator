@@ -16,7 +16,7 @@ from Games.Calcublock.Calcublock import Tetris
 
 from Games.Platformer.Platformer import GameWindow
 
-from Games.Platformer.exp import GameWindowP
+# from Games.Platformer.exp import GameWindowP
 
 from Games.Snakulator.snakulator import Snakulator
 
@@ -776,12 +776,12 @@ class Calculator(QWidget):
             self.n = GameWindow()
             self.n.setup()
             self.n.run()
-        elif result == 101:
-            self.calculator_position = self.pos()
-            calc_pos = self.pos()
-            self.n = GameWindowP()
-            self.n.setup()
-            self.n.run()
+        # elif result == 101:
+        #     self.calculator_position = self.pos()
+        #     calc_pos = self.pos()
+        #     self.n = GameWindowP()
+        #     self.n.setup()
+        #     self.n.run()
 
 
 if __name__ == '__main__':

@@ -9,9 +9,46 @@ GRAVITY = 0.8
 JUMP_FORCE = 15
 MOVE_SPEED = 5
 
+with open("setup") as file:
+    setting = file.readlines()
+    SAVES = {}
+    for elem in setting:
+        SAVES[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+
+with open("inventory") as file:
+    setting = file.readlines()
+    INVENTORY = {}
+    for elem in setting:
+        INVENTORY[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+    print("Open, code 0")
+
+SIZE = int(SAVES["SIZE"])
+DIFFICULTY = int(SAVES["DIFFICULTY"])
+BALANCE = int(INVENTORY["BALANCE"])
+
 
 class GameWindow(arcade.Window):
     def __init__(self):
+        global SIZE, DIFFICULTY, BALANCE
+        with open("setup") as file:
+            setting = file.readlines()
+            SAVES = {}
+            for elem in setting:
+                SAVES[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+
+        with open("inventory") as file:
+            setting = file.readlines()
+            INVENTORY = {}
+            for elem in setting:
+                INVENTORY[f"{elem.split(" = ")[0]}"] = elem.split(" = ")[1]
+            print("Open, code 0")
+
+        SIZE = int(SAVES["SIZE"])
+        DIFFICULTY = int(SAVES["DIFFICULTY"])
+        BALANCE = int(INVENTORY["BALANCE"])
+
+        self.balance = BALANCE
+
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         self.background_color = arcade.color.SKY_BLUE
@@ -737,6 +774,21 @@ class GameWindow(arcade.Window):
 
     def on_close(self):
         # Останавливаем музыку, чтобы она не ушла в главное меню
+
+        self.balance += int(self.total_coins) * int(DIFFICULTY) * 10
+        INVENTORY["BALANCE"] = self.balance
+        # Сохраняем в файл
+        try:
+            with open("inventory", "w", encoding="utf-8") as file:
+                lines = []
+                for key, value in INVENTORY.items():
+                    lines.append(f"{key} = {value}")
+                file.write("\n".join(lines))
+            print("Save, code 0")
+        except Exception as e:
+            print(f"Ошибка при сохранении баланса: {e}")
+
+        arcade.close_window()
         arcade.stop_sound(self.sound_player)
         super().on_close()
 
