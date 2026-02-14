@@ -775,7 +775,8 @@ class GameWindow(arcade.Window):
     def on_close(self):
         # Останавливаем музыку, чтобы она не ушла в главное меню
 
-        self.balance += int(self.total_coins) * int(DIFFICULTY) * 10
+        if self.win:
+            self.balance += int(self.total_coins) * int(DIFFICULTY) * 10
         INVENTORY["BALANCE"] = self.balance
         # Сохраняем в файл
         try:

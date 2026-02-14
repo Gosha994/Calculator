@@ -275,7 +275,7 @@ class Tetris(arcade.Window):
                            arcade.color.BLACK, 16, batch=self.batch)
         balance = arcade.Text(f"Монеты: {(self.score * DIFFICULTY) // 10}", 10, SCREEN_HEIGHT - 50,
                               arcade.color.BLACK, 16, batch=self.batch)
-        self.balance = balance
+        self.balance += (self.score * DIFFICULTY) // 10
         # particles = arcade.particles.EternalParticle()
         game_over = arcade.Text("ИГРА ОКОНЧЕНА!",
                                 SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
