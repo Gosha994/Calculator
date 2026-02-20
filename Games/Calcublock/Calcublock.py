@@ -91,8 +91,8 @@ class Tetris(arcade.Window):
         DIFFICULTY = int(SAVES["DIFFICULTY"])
         BALANCE = int(INVENTORY["BALANCE"])
 
-        self.balance = BALANCE
-
+        self.balance = int(BALANCE)
+        print("Calcublock balance:", self.balance)
 
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Тетрис")
         arcade.set_background_color(arcade.color.SILVER)
@@ -186,7 +186,6 @@ class Tetris(arcade.Window):
                         hit = arcade.load_sound(":resources:sounds/hurt3.wav")
                         arcade.play_sound(hit)
 
-
         # Проверка заполненных линий
         self.check_lines()
 
@@ -212,6 +211,8 @@ class Tetris(arcade.Window):
         # Начисление очков
         if lines_cleared > 0:
             self.score += [100, 300, 500, 800][min(lines_cleared - 1, 3)]
+            self.balance += (100 * DIFFICULTY) // 10
+            print("Calcublock balance:", self.balance)
 
     def hard_drop(self):
         """ Мгновенное падение фигуры """
@@ -275,7 +276,7 @@ class Tetris(arcade.Window):
                            arcade.color.BLACK, 16, batch=self.batch)
         balance = arcade.Text(f"Монеты: {(self.score * DIFFICULTY) // 10}", 10, SCREEN_HEIGHT - 50,
                               arcade.color.BLACK, 16, batch=self.batch)
-        self.balance += (self.score * DIFFICULTY) // 10
+
         # particles = arcade.particles.EternalParticle()
         game_over = arcade.Text("ИГРА ОКОНЧЕНА!",
                                 SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
@@ -351,6 +352,7 @@ class Tetris(arcade.Window):
     def on_close(self):
         # Останавливаем музыку, чтобы она не ушла в главное меню
         INVENTORY["BALANCE"] = self.balance
+        print("Calcublock balance:", self.balance)
         # Сохраняем в файл
         try:
             with open("inventory", "w", encoding="utf-8") as file:
@@ -362,6 +364,22 @@ class Tetris(arcade.Window):
         except Exception as e:
             print(f"Ошибка при сохранении баланса: {e}")
 
+
+        # Сохранение настроек
+        SAVES["IS_GAME_STARTED"] = False
+        try:
+            with open("setup", "w", encoding="utf-8") as file:
+                lines = []
+                for key, value in SAVES.items():
+                    lines.append(f"{key} = {value}")
+                file.write("".join(lines))
+            print("Save, code 0")
+        except Exception as e:
+            print(f"Ошибка при сохранении настроек: {e}")
+        print("IS_GAME_STARTED: Calcublock:", str(SAVES["IS_GAME_STARTED"]))
+
+
+        arcade.stop_sound(self.sound_player)
         arcade.close_window()
 
 

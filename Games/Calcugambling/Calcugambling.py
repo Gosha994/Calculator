@@ -282,6 +282,20 @@ class Calcugambling(arcade.Window):
         except Exception as e:
             print(f"Ошибка при сохранении баланса: {e}")
 
+
+        # Сохранение настроек
+        SAVES["IS_GAME_STARTED"] = False
+        try:
+            with open("setup", "w", encoding="utf-8") as file:
+                lines = []
+                for key, value in SAVES.items():
+                    lines.append(f"{key} = {value}")
+                file.write("".join(lines))
+            print("Save, code 0")
+        except Exception as e:
+            print(f"Ошибка при сохранении настроек: {e}")
+
+
         arcade.close_window()
         arcade.stop_sound(self.sound_player)
         super().on_close()

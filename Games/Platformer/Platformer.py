@@ -59,6 +59,7 @@ class GameWindow(arcade.Window):
         self.player_y_vel = 0
         self.is_on_ground = False
         self.on_moving_platform = None
+        self.sound_player = None
 
         self.walk_textures = []
         self.current_texture = 0
@@ -713,6 +714,7 @@ class GameWindow(arcade.Window):
             if self.coins_collected >= self.total_coins:
                 self.win = True
                 self.create_particle_effect(self.finish_flag.center_x,
+
                                             self.finish_flag.center_y + 50,
                                             arcade.color.GOLD, 30)
 
@@ -788,6 +790,18 @@ class GameWindow(arcade.Window):
             print("Save, code 0")
         except Exception as e:
             print(f"Ошибка при сохранении баланса: {e}")
+
+        # Сохранение настроек
+        SAVES["IS_GAME_STARTED"] = False
+        try:
+            with open("setup", "w", encoding="utf-8") as file:
+                lines = []
+                for key, value in SAVES.items():
+                    lines.append(f"{key} = {value}")
+                file.write("".join(lines))
+            print("Save, code 0")
+        except Exception as e:
+            print(f"Ошибка при сохранении настроек: {e}")
 
         arcade.close_window()
         arcade.stop_sound(self.sound_player)
