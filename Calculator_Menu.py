@@ -4,26 +4,9 @@ from PyQt6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QL
 from PyQt6.QtCore import Qt, QPoint, QSettings
 from PyQt6.QtGui import QIcon, QAction
 
-import arcade
 
-import Games.GameMenu
 from TitleBar import CustomTitleBar
-
-from Games.Arculator.arculator import Arculator
-
-from Games.Culcuraptor.culcuraptor import Culcuraptor
-
-from Games.Calcugambling.Calcugambling import Calcugambling
-
-from Games.Calcublock.Calcublock import Tetris
-
-from Games.Platformer.Platformer import GameWindow
-
 from Games.GameMenu import Start
-
-# from Games.Platformer.exp import GameWindowP
-
-from Games.Snakulator.snakulator import Snakulator
 
 # Загружаем константы
 with open("setup") as file:
@@ -796,92 +779,7 @@ class Calculator(QWidget):
         msg.exec()
 
     def mini_games_and_events(self, result):
-        self.n = None
-        # with open("setup") as file1:
-        #     setting1 = file1.readlines()
-        #     SAVES1 = {}
-        #     for elem1 in setting1:
-        #         SAVES1[f"{elem1.split(" = ")[0]}"] = elem1.split(" = ")[1]
-        #
-        # IS_GAME_STARTED1 = eval(SAVES1["IS_GAME_STARTED"])
-        # print("IS_GAME_STARTED:", str(IS_GAME_STARTED1))
-        # self.is_game_started = IS_GAME_STARTED1
-        self.is_game_started = False
-        if result == 777 and not self.is_game_started:
-            self.is_game_started = True
-            # Сохраняем текущую позицию калькулятора
-            self.calculator_position = self.pos()
-            # self.hide()
-            calc_pos = self.pos()
-            self.n = Calcugambling()
-            self.n.setup()
-            self.n.run()
-
-        # elif result == 99 and not self.is_game_open:
-        # self.is_game_open = True
-        #     Сохраняем текущую позицию калькулятора
-        # self.calculator_position = self.pos()
-        # self.hide()
-        # calc_pos = self.pos()
-        # self.n = Platformer(parent_calculator=self, parent_pos=calc_pos, run=True)
-        # self.n.show()
-        elif result == 69 and not self.is_game_started:
-            self.is_game_started = True
-            # Сохраняем текущую позицию калькулятора
-            self.calculator_position = self.pos()
-            # self.hide()
-            calc_pos = self.pos()
-            # print(calc_pos)
-            self.n = Arculator()
-            self.n.setup()
-            self.n.run()
-            ...
-        elif result == 404 and not self.is_game_started:
-            self.is_game_started = True
-            self.calculator_position = self.pos()
-            calc_pos = self.pos()
-            self.n = Culcuraptor(SIZE, DIFFICULTY)
-            self.n.setup()
-            self.n.run()
-        # TODO: исправить змейку (крашит все игры сразу)
-        # elif result == 1000 and not self.is_game_open:
-        #     self.is_game_open = True
-        #     self.calculator_position = self.pos()
-        #     calc_pos = self.pos()
-        #     self.n = Snakulator()
-        #     self.n.setup()
-        #     self.n.run()
-        elif result == 111 and not self.is_game_started:
-            self.is_game_started = True
-            self.calculator_position = self.pos()
-            calc_pos = self.pos()
-            self.n = Tetris()
-            self.n.run()
-        elif result == 100 and not self.is_game_started:
-            self.is_game_started = True
-            self.calculator_position = self.pos()
-            calc_pos = self.pos()
-            self.n = GameWindow()
-            self.n.setup()
-            self.n.run()
-        # elif result == 101:
-        #     self.is_game_open = True
-        #     self.calculator_position = self.pos()
-        #     calc_pos = self.pos()
-        #     self.n = GameWindowP()
-        #     self.n.setup()
-        #     self.n.run()
-        SAVES["IS_GAME_STARTED"] = True
-        try:
-            with open("setup", "w", encoding="utf-8") as file:
-                lines = []
-                for key, value in SAVES.items():
-                    lines.append(f"{key} = {value}")
-                file.write("".join(lines))
-            print("Save, code 0")
-        except Exception as e:
-            print(f"Ошибка при сохранении настроек: {e}")
-        print("IS_GAME_STARTED: Menu:", str(SAVES["IS_GAME_STARTED"]))
+        ...
 
 
 if __name__ == '__main__':

@@ -149,9 +149,10 @@ class Block(arcade.Sprite):
             self.window.sprites.remove(self)
 
 
-class Arculator(arcade.Window):
+class Arculator(arcade.View):
     def __init__(self, parent_pos=None):
-        super().__init__(round(600 * SIZE), round(800 * SIZE), "Arculator")
+        super().__init__()
+        # round(600 * SIZE), round(800 * SIZE), "Arculator"
         self.background = arcade.load_texture(":resources:/images/backgrounds/abstract_1.jpg")
 
         global SOUNDS
@@ -205,6 +206,8 @@ class Arculator(arcade.Window):
 
         # Флаг для проверки, все ли блоки снесены
         self.all_blocks_destroyed = False
+
+        self.setup()
 
     def setup(self):
         # Если все блоки были снесены в предыдущем уровне, сохраняем баланс
@@ -275,7 +278,6 @@ class Arculator(arcade.Window):
         arcade.stop_sound(self.sound_player)
         global SOUNDS
         SOUNDS = False
-        super().on_close()
 
 
 if __name__ == "__main__":
