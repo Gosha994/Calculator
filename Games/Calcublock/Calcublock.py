@@ -350,6 +350,13 @@ class Tetris(arcade.View):
     # def (self):
 
     def on_close(self):
+    #     from Games.GameMenu import Start
+    #     self.start = Start()
+    #     arcade.stop_sound()
+    #     arcade.close_window()
+    #     self.start.open()
+
+
         # Останавливаем музыку, чтобы она не ушла в главное меню
         INVENTORY["BALANCE"] = self.balance
         print("Calcublock balance:", self.balance)
@@ -372,7 +379,7 @@ class Tetris(arcade.View):
                 lines = []
                 for key, value in SAVES.items():
                     lines.append(f"{key} = {value}")
-                file.write("".join(lines))
+                file.write("\n".join(lines))
             print("Save, code 0")
         except Exception as e:
             print(f"Ошибка при сохранении настроек: {e}")
