@@ -1,9 +1,12 @@
 import math
 import sys
-from PyQt6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QLineEdit, QMessageBox)
+from PyQt6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QLineEdit, QMessageBox, QMenu)
 from PyQt6.QtCore import Qt, QPoint, QSettings
 from PyQt6.QtGui import QIcon, QAction
 
+import arcade
+
+import Games.GameMenu
 from TitleBar import CustomTitleBar
 
 from Games.Arculator.arculator import Arculator
@@ -15,6 +18,8 @@ from Games.Calcugambling.Calcugambling import Calcugambling
 from Games.Calcublock.Calcublock import Tetris
 
 from Games.Platformer.Platformer import GameWindow
+
+from Games.GameMenu import Start
 
 # from Games.Platformer.exp import GameWindowP
 
@@ -44,7 +49,7 @@ SIZE = int(SAVES["SIZE"])
 DIFFICULTY = int(SAVES["DIFFICULTY"])
 IS_GAME_STARTED = eval(SAVES["IS_GAME_STARTED"])
 
-SIZE = 1.2
+SIZE = 1
 
 
 class Calculator(QWidget):
@@ -61,11 +66,12 @@ class Calculator(QWidget):
         self.game_mode = False
         self.old_count = ""
         self.is_game_started = False
+        self.evo_tree_is_started = False
 
     def initUI(self):
         # Создание GUI
         self.setWindowTitle("Калькулятор")
-        self.setFixedSize(int(370 * SIZE), int(580 * SIZE))  # Увеличил высоту на 40px для title bar
+        self.setFixedSize(int(370 * SIZE), int(620 * SIZE))  # Увеличил высоту на 40px для title bar
         self.setStyleSheet("background-color: #1a1a1a;")  # Темный фон
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)  # Удаление title-bar
 
@@ -102,12 +108,11 @@ class Calculator(QWidget):
                         }
                     """)
         self.secret_button.clicked.connect(self.show_secret_popup)
+        # -------------------------------------Блок отвечающий за кнопки-------------------------------------------------------
 
-        # --------------------------------------------------------------------------------------------------------------
-
-        # Блок отвечающий за кнопки:
         # Создание кнопок
-        settings = QPushButton("U+2261", content_widget)
+        settings = QPushButton("≡", content_widget)
+        evo_tree = QPushButton("🌳", content_widget)
         btn1 = QPushButton("1", content_widget)
         btn2 = QPushButton("2", content_widget)
         btn3 = QPushButton("3", content_widget)
@@ -140,7 +145,10 @@ class Calculator(QWidget):
         # Размер кнопок
         btn_small_x = int(70 * SIZE)
         btn_small_y = int(70 * SIZE)
-        settings.resize(int(15 * SIZE), int(15 * SIZE))
+        settings_btn_x = 50
+        settings_btn_y = 50
+        settings.resize(int(settings_btn_x * SIZE), int(settings_btn_y * SIZE))
+        evo_tree.resize(int(settings_btn_x * SIZE), int(settings_btn_y * SIZE))
         btn1.resize(btn_small_x, btn_small_y)
         btn2.resize(btn_small_x, btn_small_y)
         btn3.resize(btn_small_x, btn_small_y)
@@ -171,49 +179,58 @@ class Calculator(QWidget):
         btn_inverse_value.resize(btn_small_x, btn_small_y)
 
         # Расположение кнопок
+        # Верхние меню
+        settings.move(int(10 * SIZE), int(0 * SIZE))
+        evo_tree.move(int(60 * SIZE), int(0 * SIZE))
         # Цифры и основные операции
-        settings.move(int(10 * SIZE), int(10 * SIZE))
-        btn1.move(int(10 * SIZE), int(250 * SIZE))
-        btn2.move(int(80 * SIZE), int(250 * SIZE))
-        btn3.move(int(150 * SIZE), int(250 * SIZE))
-        btn4.move(int(10 * SIZE), int(320 * SIZE))
-        btn5.move(int(80 * SIZE), int(320 * SIZE))
-        btn6.move(int(150 * SIZE), int(320 * SIZE))
-        btn7.move(int(10 * SIZE), int(390 * SIZE))
-        btn8.move(int(80 * SIZE), int(390 * SIZE))
-        btn9.move(int(150 * SIZE), int(390 * SIZE))
-        btn0.move(int(10 * SIZE), int(460 * SIZE))
-        btn_dot.move(int(150 * SIZE), int(460 * SIZE))
+        btn1.move(int(10 * SIZE), int(290 * SIZE))
+        btn2.move(int(80 * SIZE), int(290 * SIZE))
+        btn3.move(int(150 * SIZE), int(290 * SIZE))
+        btn4.move(int(10 * SIZE), int(360 * SIZE))
+        btn5.move(int(80 * SIZE), int(360 * SIZE))
+        btn6.move(int(150 * SIZE), int(360 * SIZE))
+        btn7.move(int(10 * SIZE), int(430 * SIZE))
+        btn8.move(int(80 * SIZE), int(430 * SIZE))
+        btn9.move(int(150 * SIZE), int(430 * SIZE))
+        btn0.move(int(10 * SIZE), int(500 * SIZE))
+        btn_dot.move(int(150 * SIZE), int(500 * SIZE))
 
         # Операторы справа
-        btn_plus.move(int(220 * SIZE), int(250 * SIZE))
-        btn_minus.move(int(220 * SIZE), int(320 * SIZE))
-        btn_multiply.move(int(220 * SIZE), int(390 * SIZE))
-        btn_share.move(int(220 * SIZE), int(460 * SIZE))
+        btn_plus.move(int(220 * SIZE), int(290 * SIZE))
+        btn_minus.move(int(220 * SIZE), int(360 * SIZE))
+        btn_multiply.move(int(220 * SIZE), int(430 * SIZE))
+        btn_share.move(int(220 * SIZE), int(500 * SIZE))
 
         # Кнопка равно (большая, справа)
-        btn_equally.move(int(290 * SIZE), int(390 * SIZE))
+        btn_equally.move(int(290 * SIZE), int(430 * SIZE))
 
         # Верхний ряд (управление)
-        btn_delete.move(int(10 * SIZE), int(180 * SIZE))
-        btn_clear_entry.move(int(80 * SIZE), int(180 * SIZE))
-        btn_clear.move(int(150 * SIZE), int(180 * SIZE))
-        btn_plus_minus.move(int(220 * SIZE), int(180 * SIZE))
-        btn_root.move(int(290 * SIZE), int(180 * SIZE))
+        btn_delete.move(int(10 * SIZE), int(220 * SIZE))
+        btn_clear_entry.move(int(80 * SIZE), int(220 * SIZE))
+        btn_clear.move(int(150 * SIZE), int(220 * SIZE))
+        btn_plus_minus.move(int(220 * SIZE), int(220 * SIZE))
+        btn_root.move(int(290 * SIZE), int(220 * SIZE))
 
         # Память (самый верх)
-        btn_memory_clear.move(int(10 * SIZE), int(110 * SIZE))
-        btn_memory_read.move(int(80 * SIZE), int(110 * SIZE))
-        btn_memory_store.move(int(150 * SIZE), int(110 * SIZE))
-        btn_memory_plus.move(int(220 * SIZE), int(110 * SIZE))
-        btn_memory_minus.move(int(290 * SIZE), int(110 * SIZE))
+        btn_memory_clear.move(int(10 * SIZE), int(150 * SIZE))
+        btn_memory_read.move(int(80 * SIZE), int(150 * SIZE))
+        btn_memory_store.move(int(150 * SIZE), int(150 * SIZE))
+        btn_memory_plus.move(int(220 * SIZE), int(150 * SIZE))
+        btn_memory_minus.move(int(290 * SIZE), int(150 * SIZE))
 
         # Дополнительные функции
-        btn_percent.move(int(290 * SIZE), int(250 * SIZE))
-        btn_inverse_value.move(int(290 * SIZE), int(320 * SIZE))
+        btn_percent.move(int(290 * SIZE), int(290 * SIZE))
+        btn_inverse_value.move(int(290 * SIZE), int(360 * SIZE))
 
         # Функционал кнопок
-        # settings.clicked.connect(lambda: self.keyboard_input())
+        settings.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        settings.customContextMenuRequested.connect(lambda: self.setting_open("open", "context_menu"))
+        settings.clicked.connect(lambda: self.setting_open("open", "context_menu"))
+
+        evo_tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        evo_tree.customContextMenuRequested.connect(lambda: self.evo_tree_open(True))
+        evo_tree.clicked.connect(lambda: self.evo_tree_open(True))
+
         btn1.clicked.connect(lambda: self.keyboard_input("1", "num"))
         btn2.clicked.connect(lambda: self.keyboard_input("2", "num"))
         btn3.clicked.connect(lambda: self.keyboard_input("3", "num"))
@@ -253,7 +270,7 @@ class Calculator(QWidget):
                 font-size: 20px;
                 font-weight: 300;
                 font-family: "Segoe UI";
-                padding: 12px;
+                padding: 2px;
                 margin: 5px;
             }
             QPushButton:hover {
@@ -265,12 +282,15 @@ class Calculator(QWidget):
             }
         """
 
-        for btn in [btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btn_plus, btn_minus, btn_equally,
+        for btn in [evo_tree, settings, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btn_plus, btn_minus,
+                    btn_equally,
                     btn_share, btn_multiply, btn_dot, btn_delete, btn_clear_entry, btn_memory_clear, btn_memory_read,
                     btn_memory_store, btn_memory_plus, btn_memory_minus, btn_clear, btn_plus_minus, btn_root,
                     btn_percent, btn_inverse_value]:
             btn.setStyleSheet(button_style)
 
+        evo_tree.clearFocus()
+        settings.clearFocus()
         btn1.clearFocus()
         btn2.clearFocus()
         btn3.clearFocus()
@@ -306,7 +326,7 @@ class Calculator(QWidget):
         self.text_count = QLineEdit(content_widget)
         self.text_count.setReadOnly(True)
         self.text_count.setText("0")
-        self.text_count.move(int(15 * SIZE), int(15 * SIZE))
+        self.text_count.move(int(15 * SIZE), int(55 * SIZE))
         self.text_count.setFixedWidth(int(340 * SIZE))
         self.text_count.resize(int(260 * SIZE), int(90 * SIZE))
         self.text_count.setFrame(False)
@@ -331,7 +351,7 @@ class Calculator(QWidget):
         self.memory_text_count = QLineEdit(content_widget)
         self.memory_text_count.setReadOnly(True)
         self.memory_text_count.setText("")
-        self.memory_text_count.move(int(25 * SIZE), int(20 * SIZE))
+        self.memory_text_count.move(int(25 * SIZE), int(60 * SIZE))
         self.memory_text_count.setFixedWidth(int(320 * SIZE))
         self.memory_text_count.resize(int(260 * SIZE), int(15 * SIZE))
         self.memory_text_count.setFrame(False)
@@ -533,8 +553,22 @@ class Calculator(QWidget):
 
         self.text_count.setText(str(self.count))
 
-    def setting_open(self, arg="settings"):
+    def setting_open(self, arg="settings", type_f=""):
+        # self.setFixedSize(int(370 * SIZE * 2), int(580 * SIZE))
+        print("good clicked settings")
         ...
+
+    def evo_tree_open(self, is_opend=False):
+        print("good clicked evo_tree")
+        self.start = Start()
+        if not self.evo_tree_is_started:
+            self.evo_tree_is_started = True
+            self.start.open()
+            print(self.evo_tree_is_started)
+        if self.evo_tree_is_started:
+            self.evo_tree_is_started = False
+            self.start.close()
+            print(self.evo_tree_is_started)
 
     def result(self, arg="result"):
         self.old_count = self.count

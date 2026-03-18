@@ -1,5 +1,6 @@
 import arcade
 
+
 class Menu(arcade.View):
     def __init__(self):
         super().__init__()
@@ -11,8 +12,16 @@ class Menu(arcade.View):
         platformer_btn = arcade.Sprite()
         snakulator_btn = arcade.Sprite()
 
-if __name__ == "__main__":
-    game_window = arcade.Window(800, 800, "game")
-    view = Menu()
-    game_window.show_view(view)
-    arcade.run()
+class Start():
+    def __init__(self):
+        ...
+    def open(self):
+        print("starting")
+        game_window = arcade.Window(800, 800, "game")
+        view = Menu()
+        game_window.show_view(view)
+        arcade.run()
+
+    def close(self):
+        arcade.close_window()
+
