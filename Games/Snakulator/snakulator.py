@@ -57,9 +57,9 @@ class Snake(arcade.Sprite):
             self.texture = arcade.load_texture(self.window.textures[self.len_num % 2 + 1])
 
 
-class Snakulator(arcade.Window):
+class Snakulator(arcade.View):
     def __init__(self):
-        super().__init__(round(550 * SIZE), round(550 * SIZE), "Snakulator")
+        super().__init__()
         self.textures = {0: ":resources:/images/tiles/grassMid.png", 1: ":resources:/images/tiles/grassCenter.png",
                          2: ":resources:/images/tiles/grassCenter.png"}
         self.keys_to_degrees = {100: 90, 65363: 90, 119: 0, 65362: 0, 97: 270, 65361: 270, 115: 180, 65364: 180}
@@ -81,6 +81,8 @@ class Snakulator(arcade.Window):
         self.sprites = arcade.SpriteList()
 
         self.move_timer = 0
+
+        self.setup()
 
     def on_key_press(self, symbol: int, modifiers: int) -> EVENT_HANDLE_STATE:
         if symbol in self.keys_to_degrees:

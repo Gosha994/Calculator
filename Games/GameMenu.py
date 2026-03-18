@@ -1,5 +1,10 @@
 import arcade
 from Games.Arculator.arculator import Arculator
+from Games.Calcublock.Calcublock import Tetris
+from Games.Calcugambling.Calcugambling import Calcugambling
+from Games.Culcuraptor.culcuraptor import Culcuraptor
+from Games.Platformer.Platformer import GameWindow
+from Games.Snakulator.snakulator import Snakulator
 
 with open("setup") as file:
     setting = file.readlines()
@@ -24,8 +29,6 @@ BALANCE = int(INVENTORY["BALANCE"])
 class Menu(arcade.View):
     def __init__(self):
         super().__init__()
-
-        print(self.width, self.height)
 
         # --------------------------------------------------------------------------------------------------------------
         # Создание кнопок для открытия игр
@@ -56,28 +59,33 @@ class Menu(arcade.View):
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
         if self.arculator_btn.visible and arcade.get_sprites_at_point((x, y), self.arculator_btn_list):
-            self.window.width, self.window.height = 600, 800
+            self.window.width, self.window.height = round(600 * SIZE), round(800 * SIZE)
             game_view = Arculator()
             self.window.show_view(game_view)
 
         elif self.calcublock_btn.visible and arcade.get_sprites_at_point((x, y), self.calcublock_btn_list):
-            game_view = None
+            self.window.width, self.window.height = round(430 * SIZE), round(840 * SIZE)
+            game_view = Tetris()
             self.window.show_view(game_view)
 
         elif self.calcugambling_btn.visible and arcade.get_sprites_at_point((x, y), self.calcugambling_btn_list):
-            game_view = None
+            self.window.width, self.window.height = round(528 * SIZE), round(828 * SIZE)
+            game_view = Calcugambling()
             self.window.show_view(game_view)
 
         elif self.culuraptor_btn.visible and arcade.get_sprites_at_point((x, y), self.culuraptor_btn_list):
-            game_view = None
+            self.window.width, self.window.height = round(800 * SIZE), round(600 * SIZE)
+            game_view = Culcuraptor()
             self.window.show_view(game_view)
 
         elif self.platformer_btn.visible and arcade.get_sprites_at_point((x, y), self.platformer_btn_list):
-            game_view = None
+            self.window.width, self.window.height = round(1000), round(600)
+            game_view = GameWindow()
             self.window.show_view(game_view)
 
         elif self.snakulator_btn.visible and arcade.get_sprites_at_point((x, y), self.snakulator_btn_list):
-            game_view = None
+            self.window.width, self.window.height = round(600 * SIZE), round(600 * SIZE)
+            game_view = Snakulator
             self.window.show_view(game_view)
 
 
@@ -86,8 +94,8 @@ class Start:
         ...
     def open(self):
         print("starting")
-        game_window = arcade.Window(round(800 * SIZE), round(800 * SIZE), "game")
-        view = Arculator()
+        game_window = arcade.Window(round(600 * SIZE), round(600 * SIZE), "game")
+        view = Menu()
         game_window.show_view(view)
         arcade.run()
 

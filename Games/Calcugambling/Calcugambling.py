@@ -111,8 +111,8 @@ class WheelSlot(arcade.Sprite):
         self.scale = self.fixed_scale
 
 
-class Calcugambling(arcade.Window):
-    def __init__(self, width=SCREEN_WIDTH, height=SCREEN_HEIGHT, title=SCREEN_TITLE):
+class Calcugambling(arcade.View):
+    def __init__(self):
         global SIZE, DIFFICULTY, BALANCE
         with open("setup") as file:
             setting = file.readlines()
@@ -132,7 +132,7 @@ class Calcugambling(arcade.Window):
         BALANCE = int(INVENTORY["BALANCE"])
 
 
-        super().__init__(width, height, title)
+        super().__init__()
         arcade.set_background_color(arcade.color.ASH_GREY)
 
         # Баланс игрока
@@ -147,6 +147,8 @@ class Calcugambling(arcade.Window):
         # Создаем шрифт для текста
         self.font_size = 24
         self.font_color = arcade.color.WHITE
+
+        self.setup()
 
     def setup(self):
         """Настройка игры, создание элементов"""

@@ -71,7 +71,7 @@ COLORS = [
 ]
 
 
-class Tetris(arcade.Window):
+class Tetris(arcade.View):
     def __init__(self):
         global SIZE, DIFFICULTY, BALANCE
         with open("setup") as file:
@@ -94,7 +94,7 @@ class Tetris(arcade.Window):
         self.balance = int(BALANCE)
         print("Calcublock balance:", self.balance)
 
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Тетрис")
+        super().__init__()
         arcade.set_background_color(arcade.color.SILVER)
 
         # Игровое поле (0 — пусто, 1-7 — фигура)

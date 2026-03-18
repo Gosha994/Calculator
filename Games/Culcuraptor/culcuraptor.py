@@ -83,10 +83,11 @@ class Object(arcade.Sprite):
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Сама игра
-class Culcuraptor(arcade.Window):
-    def __init__(self, size: float, difficulty: float):
-        super().__init__(round(800 * size), round(600 * size), "Culcuraptor")
-        self.SIZE, self.DIFFICULTY = size, difficulty
+class Culcuraptor(arcade.View):
+    def __init__(self):
+        super().__init__()
+        global SIZE, DIFFICULTY
+        self.SIZE, self.DIFFICULTY = SIZE, DIFFICULTY
 
         # Константы, связанные с ходом игры
         self.playing = False
@@ -129,6 +130,8 @@ class Culcuraptor(arcade.Window):
 
         # Звук обновления счёта
         self.score_update = arcade.load_sound(":resources:sounds/coin1.wav")
+
+        self.setup()
 
     # ------------------------------------------------------------------------------------------------------------------
     def setup(self):

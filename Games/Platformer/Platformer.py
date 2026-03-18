@@ -27,7 +27,7 @@ DIFFICULTY = int(SAVES["DIFFICULTY"])
 BALANCE = int(INVENTORY["BALANCE"])
 
 
-class GameWindow(arcade.Window):
+class GameWindow(arcade.View):
     def __init__(self):
         global SIZE, DIFFICULTY, BALANCE
         with open("setup") as file:
@@ -49,7 +49,7 @@ class GameWindow(arcade.Window):
 
         self.balance = BALANCE
 
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         self.background_color = arcade.color.SKY_BLUE
 
@@ -99,6 +99,8 @@ class GameWindow(arcade.Window):
         self.enemy_spawn_time = 0
 
         self.finish_flag = None
+
+        self.setup()
 
     def setup(self):
         for i in range(8):
