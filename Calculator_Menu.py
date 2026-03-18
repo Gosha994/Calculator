@@ -44,6 +44,8 @@ SIZE = int(SAVES["SIZE"])
 DIFFICULTY = int(SAVES["DIFFICULTY"])
 IS_GAME_STARTED = eval(SAVES["IS_GAME_STARTED"])
 
+SIZE = 1.2
+
 
 class Calculator(QWidget):
     def __init__(self):
@@ -63,7 +65,7 @@ class Calculator(QWidget):
     def initUI(self):
         # Создание GUI
         self.setWindowTitle("Калькулятор")
-        self.setFixedSize(370, 580)  # Увеличил высоту на 40px для title bar
+        self.setFixedSize(int(370 * SIZE), int(580 * SIZE))  # Увеличил высоту на 40px для title bar
         self.setStyleSheet("background-color: #1a1a1a;")  # Темный фон
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)  # Удаление title-bar
 
@@ -105,6 +107,7 @@ class Calculator(QWidget):
 
         # Блок отвечающий за кнопки:
         # Создание кнопок
+        settings = QPushButton("U+2261", content_widget)
         btn1 = QPushButton("1", content_widget)
         btn2 = QPushButton("2", content_widget)
         btn3 = QPushButton("3", content_widget)
@@ -135,66 +138,82 @@ class Calculator(QWidget):
         btn_inverse_value = QPushButton("1/x", content_widget)
 
         # Размер кнопок
-        btn1.resize(70, 70)
-        btn2.resize(70, 70)
-        btn3.resize(70, 70)
-        btn4.resize(70, 70)
-        btn5.resize(70, 70)
-        btn6.resize(70, 70)
-        btn7.resize(70, 70)
-        btn8.resize(70, 70)
-        btn9.resize(70, 70)
-        btn0.resize(140, 70)
-        btn_plus.resize(70, 70)
-        btn_minus.resize(70, 70)
-        btn_multiply.resize(70, 70)
-        btn_share.resize(70, 70)
-        btn_equally.resize(70, 140)
-        btn_dot.resize(70, 70)
-        btn_delete.resize(70, 70)
-        btn_clear_entry.resize(70, 70)
-        btn_memory_clear.resize(70, 70)
-        btn_memory_read.resize(70, 70)
-        btn_memory_store.resize(70, 70)
-        btn_memory_plus.resize(70, 70)
-        btn_memory_minus.resize(70, 70)
-        btn_clear.resize(70, 70)
-        btn_plus_minus.resize(70, 70)
-        btn_root.resize(70, 70)
-        btn_percent.resize(70, 70)
-        btn_inverse_value.resize(70, 70)
+        btn_small_x = int(70 * SIZE)
+        btn_small_y = int(70 * SIZE)
+        settings.resize(int(15 * SIZE), int(15 * SIZE))
+        btn1.resize(btn_small_x, btn_small_y)
+        btn2.resize(btn_small_x, btn_small_y)
+        btn3.resize(btn_small_x, btn_small_y)
+        btn4.resize(btn_small_x, btn_small_y)
+        btn5.resize(btn_small_x, btn_small_y)
+        btn6.resize(btn_small_x, btn_small_y)
+        btn7.resize(btn_small_x, btn_small_y)
+        btn8.resize(btn_small_x, btn_small_y)
+        btn9.resize(btn_small_x, btn_small_y)
+        btn0.resize(btn_small_x * 2, btn_small_y)
+        btn_plus.resize(btn_small_x, btn_small_y)
+        btn_minus.resize(btn_small_x, btn_small_y)
+        btn_multiply.resize(btn_small_x, btn_small_y)
+        btn_share.resize(btn_small_x, btn_small_y)
+        btn_equally.resize(btn_small_x, btn_small_y * 2)
+        btn_dot.resize(btn_small_x, btn_small_y)
+        btn_delete.resize(btn_small_x, btn_small_y)
+        btn_clear_entry.resize(btn_small_x, btn_small_y)
+        btn_memory_clear.resize(btn_small_x, btn_small_y)
+        btn_memory_read.resize(btn_small_x, btn_small_y)
+        btn_memory_store.resize(btn_small_x, btn_small_y)
+        btn_memory_plus.resize(btn_small_x, btn_small_y)
+        btn_memory_minus.resize(btn_small_x, btn_small_y)
+        btn_clear.resize(btn_small_x, btn_small_y)
+        btn_plus_minus.resize(btn_small_x, btn_small_y)
+        btn_root.resize(btn_small_x, btn_small_y)
+        btn_percent.resize(btn_small_x, btn_small_y)
+        btn_inverse_value.resize(btn_small_x, btn_small_y)
 
         # Расположение кнопок
-        btn1.move(10, 250)
-        btn2.move(80, 250)
-        btn3.move(150, 250)
-        btn4.move(10, 320)
-        btn5.move(80, 320)
-        btn6.move(150, 320)
-        btn7.move(10, 390)
-        btn8.move(80, 390)
-        btn9.move(150, 390)
-        btn0.move(10, 460)
-        btn_plus.move(220, 250)
-        btn_minus.move(220, 320)
-        btn_multiply.move(220, 390)
-        btn_share.move(220, 460)
-        btn_equally.move(290, 390)
-        btn_dot.move(150, 460)
-        btn_delete.move(10, 180)
-        btn_clear_entry.move(80, 180)
-        btn_memory_clear.move(10, 110)
-        btn_memory_read.move(80, 110)
-        btn_memory_store.move(150, 110)
-        btn_memory_plus.move(220, 110)
-        btn_memory_minus.move(290, 110)
-        btn_clear.move(150, 180)
-        btn_plus_minus.move(220, 180)
-        btn_root.move(290, 180)
-        btn_percent.move(290, 250)
-        btn_inverse_value.move(290, 320)
+        # Цифры и основные операции
+        settings.move(int(10 * SIZE), int(10 * SIZE))
+        btn1.move(int(10 * SIZE), int(250 * SIZE))
+        btn2.move(int(80 * SIZE), int(250 * SIZE))
+        btn3.move(int(150 * SIZE), int(250 * SIZE))
+        btn4.move(int(10 * SIZE), int(320 * SIZE))
+        btn5.move(int(80 * SIZE), int(320 * SIZE))
+        btn6.move(int(150 * SIZE), int(320 * SIZE))
+        btn7.move(int(10 * SIZE), int(390 * SIZE))
+        btn8.move(int(80 * SIZE), int(390 * SIZE))
+        btn9.move(int(150 * SIZE), int(390 * SIZE))
+        btn0.move(int(10 * SIZE), int(460 * SIZE))
+        btn_dot.move(int(150 * SIZE), int(460 * SIZE))
+
+        # Операторы справа
+        btn_plus.move(int(220 * SIZE), int(250 * SIZE))
+        btn_minus.move(int(220 * SIZE), int(320 * SIZE))
+        btn_multiply.move(int(220 * SIZE), int(390 * SIZE))
+        btn_share.move(int(220 * SIZE), int(460 * SIZE))
+
+        # Кнопка равно (большая, справа)
+        btn_equally.move(int(290 * SIZE), int(390 * SIZE))
+
+        # Верхний ряд (управление)
+        btn_delete.move(int(10 * SIZE), int(180 * SIZE))
+        btn_clear_entry.move(int(80 * SIZE), int(180 * SIZE))
+        btn_clear.move(int(150 * SIZE), int(180 * SIZE))
+        btn_plus_minus.move(int(220 * SIZE), int(180 * SIZE))
+        btn_root.move(int(290 * SIZE), int(180 * SIZE))
+
+        # Память (самый верх)
+        btn_memory_clear.move(int(10 * SIZE), int(110 * SIZE))
+        btn_memory_read.move(int(80 * SIZE), int(110 * SIZE))
+        btn_memory_store.move(int(150 * SIZE), int(110 * SIZE))
+        btn_memory_plus.move(int(220 * SIZE), int(110 * SIZE))
+        btn_memory_minus.move(int(290 * SIZE), int(110 * SIZE))
+
+        # Дополнительные функции
+        btn_percent.move(int(290 * SIZE), int(250 * SIZE))
+        btn_inverse_value.move(int(290 * SIZE), int(320 * SIZE))
 
         # Функционал кнопок
+        # settings.clicked.connect(lambda: self.keyboard_input())
         btn1.clicked.connect(lambda: self.keyboard_input("1", "num"))
         btn2.clicked.connect(lambda: self.keyboard_input("2", "num"))
         btn3.clicked.connect(lambda: self.keyboard_input("3", "num"))
@@ -287,9 +306,9 @@ class Calculator(QWidget):
         self.text_count = QLineEdit(content_widget)
         self.text_count.setReadOnly(True)
         self.text_count.setText("0")
-        self.text_count.move(15, 15)
-        self.text_count.setFixedWidth(340)
-        self.text_count.resize(260, 90)
+        self.text_count.move(int(15 * SIZE), int(15 * SIZE))
+        self.text_count.setFixedWidth(int(340 * SIZE))
+        self.text_count.resize(int(260 * SIZE), int(90 * SIZE))
         self.text_count.setFrame(False)
         self.text_count.setStyleSheet("""
             QLineEdit {
@@ -312,9 +331,9 @@ class Calculator(QWidget):
         self.memory_text_count = QLineEdit(content_widget)
         self.memory_text_count.setReadOnly(True)
         self.memory_text_count.setText("")
-        self.memory_text_count.move(25, 20)
-        self.memory_text_count.setFixedWidth(320)
-        self.memory_text_count.resize(260, 15)
+        self.memory_text_count.move(int(25 * SIZE), int(20 * SIZE))
+        self.memory_text_count.setFixedWidth(int(320 * SIZE))
+        self.memory_text_count.resize(int(260 * SIZE), int(15 * SIZE))
         self.memory_text_count.setFrame(False)
         self.memory_text_count.setStyleSheet("""
             QLineEdit {
@@ -513,6 +532,9 @@ class Calculator(QWidget):
                     self.old_type = "num"
 
         self.text_count.setText(str(self.count))
+
+    def setting_open(self, arg="settings"):
+        ...
 
     def result(self, arg="result"):
         self.old_count = self.count
