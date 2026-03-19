@@ -83,26 +83,31 @@ class Menu(arcade.View):
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
         if self.arculator_btn.visible and arcade.get_sprites_at_point((x, y), self.arculator_btn_list):
             self.window.width, self.window.height = round(600 * SIZE), round(800 * SIZE)
+            self.window.title = "arcanoid"
             game_view = Arculator()
             self.window.show_view(game_view)
 
         elif self.calcublock_btn.visible and arcade.get_sprites_at_point((x, y), self.calcublock_btn_list):
             self.window.width, self.window.height = round(430 * SIZE), round(840 * SIZE)
+            self.window.title = "tetris"
             game_view = Tetris()
             self.window.show_view(game_view)
 
         elif self.calcugambling_btn.visible and arcade.get_sprites_at_point((x, y), self.calcugambling_btn_list):
             self.window.width, self.window.height = round(528 * SIZE), round(828 * SIZE)
+            self.window.title = "gamble"
             game_view = Calcugambling()
             self.window.show_view(game_view)
 
         elif self.culuraptor_btn.visible and arcade.get_sprites_at_point((x, y), self.culuraptor_btn_list):
             self.window.width, self.window.height = round(800 * SIZE), round(600 * SIZE)
+            self.window.title = "raptor"
             game_view = Culcuraptor()
             self.window.show_view(game_view)
 
         elif self.platformer_btn.visible and arcade.get_sprites_at_point((x, y), self.platformer_btn_list):
             self.window.width, self.window.height = round(1000), round(600)
+            self.window.title = "platformer"
             game_view = GameWindow()
             self.window.show_view(game_view)
 
@@ -141,7 +146,9 @@ class Start:
 
     def open(self):
         print("starting")
-        game_window = arcade.Window(round(WIDTH * SIZE), round(HEIGHT * SIZE), "game")
+        arcade.clear_timings()
+        arcade.close_window()
+        game_window = arcade.Window(round(WIDTH * SIZE), round(HEIGHT * SIZE), "Древо игр")
         view = Menu()
         game_window.show_view(view)
         arcade.run()
