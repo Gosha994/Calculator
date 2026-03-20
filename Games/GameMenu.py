@@ -125,19 +125,19 @@ class Menu(arcade.View):
         self.calcugambling_btn_list.draw()
         self.culuraptor_btn_list.draw()
         self.platformer_btn_list.draw()
-        self.snakulator_btn_list.draw()
+        # self.snakulator_btn_list.draw()
         arcade.draw_text("arc", WIDTH * 0.355, HEIGHT * 0.190, arcade.color.WHITE, 20 ,font_name="Segoe UI")
         arcade.draw_text("ttr", WIDTH * 0.235, HEIGHT * 0.340, arcade.color.WHITE, 20, font_name="Segoe UI")
         arcade.draw_text("rnd", WIDTH * 0.575, HEIGHT * 0.090, arcade.color.WHITE, 20, font_name="Segoe UI")
         arcade.draw_text("trx", WIDTH * 0.480, HEIGHT * 0.340, arcade.color.WHITE, 20, font_name="Segoe UI")
         arcade.draw_text("ptf", WIDTH * 0.480, HEIGHT * 0.490, arcade.color.WHITE, 20, font_name="Segoe UI")
-        arcade.draw_text("snk", WIDTH * 0.225, HEIGHT * 0.490, arcade.color.WHITE, 20, font_name="Segoe UI")
         arcade.draw_circle_outline(WIDTH * 0.375, HEIGHT * 0.200, 50, COLORS["background"], 15)
         arcade.draw_circle_outline(WIDTH * 0.250, HEIGHT * 0.350, 50, COLORS["background"], 15)
         arcade.draw_circle_outline(WIDTH * 0.600, HEIGHT * 0.100, 50, COLORS["background"], 15)
         arcade.draw_circle_outline(WIDTH * 0.500, HEIGHT * 0.350, 50, COLORS["background"], 15)
         arcade.draw_circle_outline(WIDTH * 0.500, HEIGHT * 0.500, 50, COLORS["background"], 15)
-        arcade.draw_circle_outline(WIDTH * 0.250, HEIGHT * 0.500, 50, COLORS["background"], 15)
+        # arcade.draw_circle_outline(WIDTH * 0.250, HEIGHT * 0.500, 50, COLORS["background"], 15)
+        # arcade.draw_text("", WIDTH * 0.225, HEIGHT * 0.490, arcade.color.WHITE, 20, font_name="Segoe UI")
 
 
 class Start:
