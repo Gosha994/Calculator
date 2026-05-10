@@ -4,7 +4,6 @@ from PyQt6.QtWidgets import (QApplication, QWidget, QPushButton, QVBoxLayout, QL
 from PyQt6.QtCore import Qt, QPoint, QSettings
 from PyQt6.QtGui import QIcon, QAction
 
-
 from TitleBar import CustomTitleBar
 from Games.GameMenu import Start
 
@@ -405,136 +404,139 @@ class Calculator(QWidget):
 
     def keyboard_input(self, inp="", type_f=""):
         nums = ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "√")
-        if type_f == "num":
-            if self.count == "0":
-                self.count = inp
-                self.old_type = "num"
-            elif self.count == "√0":
-                self.count = "√" + inp
-                self.old_type = "num"
-            elif self.old_type == "num":
-                self.count += inp
-                self.old_type = "num"
-            else:
-                self.count += (" " + inp)
-                self.old_type = "num"
-        else:
-            # Простые числовые операции
-            if inp == "+" and self.old_type == "num":
-                self.count += " +"
-                self.old_type = "opr"
-            elif inp == "-" and self.old_type == "num":
-                self.count += " -"
-                self.old_type = "opr"
-            elif inp == "*" and self.old_type == "num":
-                self.count += " *"
-                self.old_type = "opr"
-            elif inp == "/" and self.old_type == "num":
-                self.count += " /"
-                self.old_type = "opr"
-            elif inp == "." and self.old_type == "num" and "." not in list(self.count.split()[-1]):
-                self.count += "."
-                self.old_type = "num"
-
-            # Функциональные кнопки
-            elif inp == "del":
-                ln_cn = len(self.count)
-                if ln_cn == 1:
-                    self.count = "0"
-                elif self.count[-2] == " ":
-                    self.count = self.count[:-2]
-                else:
-                    self.count = self.count[:-1]
-
-                if self.count[-1] in nums:
+        try:
+            if type_f == "num":
+                if self.count == "0":
+                    self.count = inp
                     self.old_type = "num"
-                else:
-                    self.old_type = "opr"
-
-            elif inp == "Clear":
-                self.count = "0"
-                self.old_type = "num"
-
-            elif inp == "ClrEntr":
-                if self.old_type == "num":
-                    if len(self.count) == 1:
-                        if self.count == "0":
-                            pass
-                        else:
-                            self.count = "0"
-                    else:
-                        if len(self.count.split()) == 1:
-                            self.count = "0"
-                        else:
-                            self.count = " ".join(self.count.split()[:-1])
-
-                    if self.count[-1] in nums:
-                        self.old_type = "num"
-                    else:
-                        self.old_type = "opr"
-
-            # Усложненные математические операции
-            elif inp == "PlsMns":
-                if self.old_type == "num":
-                    if len(self.count) == 1:
-                        if self.count == "0":
-                            pass
-                        else:
-                            self.count = str(eval(self.count) * (-1))
-                    else:
-                        if len(self.count.split()) == 1:
-                            self.count = str(eval(self.count) * (-1))
-                        else:
-                            self.count = (" ".join(self.count.split()[:-1]) + " " +
-                                          "".join(str(eval(self.count.split()[-1]) * (-1))))
-
-                    if self.count[-1] in nums:
-                        self.old_type = "num"
-                    else:
-                        self.old_type = "opr"
-
-            elif inp == "Root":
-                if self.old_type == "num":
-                    if self.count == "0":
-                        self.count = "√0"
-                    else:
-                        if len(self.count.split()) == 1:
-                            self.count = (" ".join(self.count.split()[:-1]) + "√" +
-                                          "".join(self.count.split()[-1]))
-                        else:
-                            self.count = (" ".join(self.count.split()[:-1]) + " " + "√" +
-                                          "".join(self.count.split()[-1]))
-                else:
-                    self.count += " √"
-                    self.old_type = "num"
-
-            elif inp == "Perc":
-                if self.old_type == "num":
-                    self.count = (" ".join(self.count.split()[:-1]) + " " +
-                                  "".join(str(eval(self.count.split()[-1]) / 100)))
-
-            elif inp == "1/inp":
-                if self.old_type == "num":
-                    self.count = (" ".join(self.count.split()[:-1]) + " " +
-                                  "".join(str(1 / eval(self.count.split()[-1]))))
-
-            elif inp == "(":
-                if self.old_type != "num":
-                    self.count += " ("
-                    self.old_type = "num"
-                elif self.count == "0":
-                    self.count = "("
+                elif self.count == "√0":
+                    self.count = "√" + inp
                     self.old_type = "num"
                 elif self.old_type == "num":
-                    self.count += "("
+                    self.count += inp
+                    self.old_type = "num"
+                else:
+                    self.count += (" " + inp)
+                    self.old_type = "num"
+            else:
+                # Простые числовые операции
+                if inp == "+" and self.old_type == "num":
+                    self.count += " +"
+                    self.old_type = "opr"
+                elif inp == "-" and self.old_type == "num":
+                    self.count += " -"
+                    self.old_type = "opr"
+                elif inp == "*" and self.old_type == "num":
+                    self.count += " *"
+                    self.old_type = "opr"
+                elif inp == "/" and self.old_type == "num":
+                    self.count += " /"
+                    self.old_type = "opr"
+                elif inp == "." and self.old_type == "num" and "." not in list(self.count.split()[-1]):
+                    self.count += "."
                     self.old_type = "num"
 
-            elif inp == ")":
-                if self.old_type == "num":
-                    self.count += ")"
+                # Функциональные кнопки
+                elif inp == "del":
+                    ln_cn = len(self.count)
+                    if ln_cn == 1:
+                        self.count = "0"
+                    elif self.count[-2] == " ":
+                        self.count = self.count[:-2]
+                    else:
+                        self.count = self.count[:-1]
+
+                    if self.count[-1] in nums:
+                        self.old_type = "num"
+                    else:
+                        self.old_type = "opr"
+
+                elif inp == "Clear":
+                    self.count = "0"
                     self.old_type = "num"
 
-        self.text_count.setText(str(self.count))
+                elif inp == "ClrEntr":
+                    if self.old_type == "num":
+                        if len(self.count) == 1:
+                            if self.count == "0":
+                                pass
+                            else:
+                                self.count = "0"
+                        else:
+                            if len(self.count.split()) == 1:
+                                self.count = "0"
+                            else:
+                                self.count = " ".join(self.count.split()[:-1])
+
+                        if self.count[-1] in nums:
+                            self.old_type = "num"
+                        else:
+                            self.old_type = "opr"
+
+                # Усложненные математические операции
+                elif inp == "PlsMns":
+                    if self.old_type == "num":
+                        if len(self.count) == 1:
+                            if self.count == "0":
+                                pass
+                            else:
+                                self.count = str(eval(self.count) * (-1))
+                        else:
+                            if len(self.count.split()) == 1:
+                                self.count = str(eval(self.count) * (-1))
+                            else:
+                                self.count = (" ".join(self.count.split()[:-1]) + " " +
+                                              "".join(str(eval(self.count.split()[-1]) * (-1))))
+
+                        if self.count[-1] in nums:
+                            self.old_type = "num"
+                        else:
+                            self.old_type = "opr"
+
+                elif inp == "Root":
+                    if self.old_type == "num":
+                        if self.count == "0":
+                            self.count = "√0"
+                        else:
+                            if len(self.count.split()) == 1:
+                                self.count = (" ".join(self.count.split()[:-1]) + "√" +
+                                              "".join(self.count.split()[-1]))
+                            else:
+                                self.count = (" ".join(self.count.split()[:-1]) + " " + "√" +
+                                              "".join(self.count.split()[-1]))
+                    else:
+                        self.count += " √"
+                        self.old_type = "num"
+
+                elif inp == "Perc":
+                    if self.old_type == "num":
+                        self.count = (" ".join(self.count.split()[:-1]) + " " +
+                                      "".join(str(eval(self.count.split()[-1]) / 100)))
+
+                elif inp == "1/inp":
+                    if self.old_type == "num":
+                        self.count = (" ".join(self.count.split()[:-1]) + " " +
+                                      "".join(str(1 / eval(self.count.split()[-1]))))
+
+                elif inp == "(":
+                    if self.old_type != "num":
+                        self.count += " ("
+                        self.old_type = "num"
+                    elif self.count == "0":
+                        self.count = "("
+                        self.old_type = "num"
+                    elif self.old_type == "num":
+                        self.count += "("
+                        self.old_type = "num"
+
+                elif inp == ")":
+                    if self.old_type == "num":
+                        self.count += ")"
+                        self.old_type = "num"
+
+            self.text_count.setText(str(self.count))
+        except:
+            self.text_count.setText("Ошибка")
 
     def setting_open(self, arg="settings", type_f=""):
         # self.setFixedSize(int(370 * SIZE * 2), int(580 * SIZE))
